@@ -1,19 +1,19 @@
 import { Linking, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import React from 'react'
 import { colors } from '../../CommonStyles/Theme'
-import  Feather  from 'react-native-vector-icons/Feather';
+import Feather from 'react-native-vector-icons/Feather';
 import { formedit, sformcontainer, sformhead, sformhead2, sformcontainerin, sformcontainerin2, sformlabel, sformvalue, sformhr, formbtn, sforminput } from "../../CommonStyles/FormStyle"
-import  AntDesign  from 'react-native-vector-icons/AntDesign';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import envs from '../../env'
 
-const RecieptEdit = ({ navigation,route }) => {
+const RecieptEdit = ({ navigation, route }) => {
   const { item } = route.params;
   const [oldreciepts, setoldreciepts] = React.useState([])
   const [editing, setediting] = React.useState(false)
 
   const [basicform, setbasicform] = React.useState({
-    recieptnumber:  item.basicform.recieptnumber,
+    recieptnumber: item.basicform.recieptnumber,
     date: item.basicform.date,
 
     clientname: item.basicform.clientname,
@@ -24,13 +24,13 @@ const RecieptEdit = ({ navigation,route }) => {
 
   const resetvalues = () => {
     setbasicform({
-      recieptnumber:  item.basicform.recieptnumber,
-    date: item.basicform.date,
+      recieptnumber: item.basicform.recieptnumber,
+      date: item.basicform.date,
 
-    clientname: item.basicform.clientname,
-    amountrecievedinwords: item.basicform.amountrecievedinwords,
-    amountrecievedinnumbers: item.basicform.amountrecievedinnumbers,
-    paymenttype: item.basicform.paymenttype,
+      clientname: item.basicform.clientname,
+      amountrecievedinwords: item.basicform.amountrecievedinwords,
+      amountrecievedinnumbers: item.basicform.amountrecievedinnumbers,
+      paymenttype: item.basicform.paymenttype,
     })
     // getoldreciepts()
   }
@@ -49,7 +49,7 @@ const RecieptEdit = ({ navigation,route }) => {
           body: JSON.stringify({
             doc: {
               basicform: basicform,
-              createdDate : item.createdDate,
+              createdDate: item.createdDate,
               docid: basicform.recieptnumber
             },
             doctype: 'reciepts'
@@ -84,32 +84,32 @@ const RecieptEdit = ({ navigation,route }) => {
     let docid = item.basicform.recieptnumber;
     let doctype = 'reciept'
     AsyncStorage.getItem('token')
-        .then(token => {
-            fetch(`${envs.BACKEND_URL}/getuserdatafromtoken`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                }
-            })
-                .then(res => res.json())
-                .then(data => {
-                    // console.log(data)
-                    userid = data.userdata._id
-
-                    // console.log(userid + '/' + doctype + '/' + docid)
-                    Linking.openURL(`https://packersandmoversweb.vercel.app/bill/${userid}/${doctype}/${docid}`)
-
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+      .then(token => {
+        fetch(`${envs.BACKEND_URL}/getuserdatafromtoken`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          }
         })
-        .catch(err => {
-            navigation.navigate('Login')
-        })
+          .then(res => res.json())
+          .then(data => {
+            // console.log(data)
+            userid = data.userdata._id
 
-}
+            // console.log(userid + '/' + doctype + '/' + docid)
+            // Linking.openURL(`https://packersandmoversweb.vercel.app/bill/${userid}/${doctype}/${docid}`)
+            navigation.navigate('PrintDoc', { userid: userid, doctype: doctype, docid: docid })
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      })
+      .catch(err => {
+        navigation.navigate('Login')
+      })
+
+  }
   return (
     <View>
       {

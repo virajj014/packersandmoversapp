@@ -13,6 +13,7 @@ import Sidebar from '../../Components/Sidebar/Sidebar'
 import  Entypo  from 'react-native-vector-icons/Entypo';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import envs from '../../env'
+import logo from '../../Media/Images/ThemeLogoFull.png'
 
 
 const Home = ({navigation}) => {
@@ -69,8 +70,10 @@ const Home = ({navigation}) => {
           } style={styles.userimg} />
         </TouchableOpacity>
         <View style={styles.searchbar}>
-          <TextInput style={styles.input} placeholder='Search' />
-          <AntDesign name="search1" size={24} color="black" />
+          {/* <TextInput style={styles.input} placeholder='Search' />
+          <AntDesign name="search1" size={24} color="black" /> */}
+        <Text style={{ color: colors.primary, fontSize: 20, padding: 10}}>Packers & Movers</Text>
+        {/* <Image source={logo} style={{ width: 70, height: 60, borderRadius: 20 }} /> */}
         </View>
       </View>
       {

@@ -11,7 +11,7 @@ import bill from './icon/bill.png'
 import reciept from './icon/moneyreciept.png'
 import lrbilty from './icon/lrbilty.png'
 import pbcard from './icon/PB-card.png'
-import  AntDesign  from 'react-native-vector-icons/AntDesign';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import envs from '../../env'
 
 const DocumentCategories = ({ navigation }) => {
@@ -74,7 +74,7 @@ const DocumentCategories = ({ navigation }) => {
 
 
       <View style={styles.s4}>
-        <View style={styles.s3}>
+        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'Quotation' })}>
           <View style={styles.s3in}>
             <Image source={quotation} style={styles.icon1} />
             <Text style={styles.t3}>Quotation</Text>
@@ -84,9 +84,9 @@ const DocumentCategories = ({ navigation }) => {
             onPress={() => navigation.navigate('SavedDocs', { doctype: 'Quotation' })}
           />
 
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.s3}>
+        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'Quotation' })}>
           <View style={styles.s3in}>
             <Image source={packinglist} style={styles.icon1} />
             <Text style={styles.t3}>Packing List</Text>
@@ -94,9 +94,9 @@ const DocumentCategories = ({ navigation }) => {
           <AntDesign name="caretright" size={20} color={colors.primary} onPress={() => navigation.navigate('SavedDocs', {
             doctype: 'PackingList'
           })} />
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.s3}>
+        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'Quotation' })}>
           <View style={styles.s3in}>
             <Image source={carcondition} style={styles.icon1} />
             <Text style={styles.t3}>Car Condition</Text>
@@ -105,9 +105,9 @@ const DocumentCategories = ({ navigation }) => {
             doctype: 'CarCondition'
           })} />
 
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.s3}>
+        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'Quotation' })}>
           <View style={styles.s3in}>
             <Image source={bill} style={styles.icon1} />
             <Text style={styles.t3}>Bill</Text>
@@ -117,9 +117,11 @@ const DocumentCategories = ({ navigation }) => {
             doctype: 'Invoice'
           })} />
 
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.s3}>
+        <TouchableOpacity style={styles.s3} onPress={() => navigation.navigate('SavedDocs', {
+          doctype: 'LrBilty'
+        })} >
           <View style={styles.s3in}>
             <Image source={lrbilty} style={styles.icon1} />
             <Text style={styles.t3}>LR Bilty</Text>
@@ -127,9 +129,20 @@ const DocumentCategories = ({ navigation }) => {
           <AntDesign name="caretright" size={20} color={colors.primary} onPress={() => navigation.navigate('SavedDocs', {
             doctype: 'LrBilty'
           })} />
+        </TouchableOpacity>
 
-        </View>
+        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'Quotation' })}>
+          <View style={styles.s3in}>
+            <Image source={reciept} style={styles.icon1} />
+            <Text style={styles.t3}>Reciept</Text>
+          </View>
+
+          <AntDesign name="caretright" size={20} color={colors.primary} onPress={() => navigation.navigate('SavedDocs', {
+            doctype: 'Reciept'
+          })} />
+        </TouchableOpacity>
       </View>
+
     </View>
   )
 }
@@ -213,7 +226,7 @@ const styles = StyleSheet.create({
   },
   t3: {
     fontSize: 16,
-    // transform: [{ rotate: '270deg' }],
+    // transform: [{rotate: '270deg' }],
     // textAlign: 'left',
     color: 'white',
   },

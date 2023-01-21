@@ -177,6 +177,13 @@ const QuotaionPrint = (document) => {
           <Text style={styles.val}>Rs. {getotal}</Text>
         </View>
 
+
+        <View style={styles.c2}>
+          <Text style={styles.label}>Discount</Text>
+          <Text style={styles.val}>Rs. {doc.doc.costform.discount}</Text>
+        </View>
+
+        
         <View style={styles.c2}>
           <Text style={styles.label}>Final Amount</Text>
           <Text style={styles.val}>Rs. {getfinaltotal}</Text>

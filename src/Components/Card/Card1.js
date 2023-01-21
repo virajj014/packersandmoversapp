@@ -68,7 +68,7 @@ const Card1 = ({ index, item, navigation, doctype }) => {
 
                 <View style={styles.doccont}>
                     {/* <Text style={styles.doctext}>DOCUMENT</Text> */}
-                    <Text style={styles.docnum}>{index + 1}</Text>
+                    <Text style={styles.docnum}>{item.docid}</Text>
                     <AntDesign name="caretright" size={20} color={colors.primary} />
                 </View>
             </View>
@@ -98,7 +98,8 @@ const styles = StyleSheet.create({
         backgroundColor: colors.primary,
         color: "#fff",
         // padding: 10,
-        width: 30,
+        // width: 30,
+        paddingHorizontal: 10,
         height: 30,
         borderRadius: 30,
         textAlign: 'center',

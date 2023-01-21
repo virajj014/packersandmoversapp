@@ -55,10 +55,10 @@ const BottomNavbar = ({ navigation, pagename }) => {
                         </View>
                     </TouchableOpacity>
             }
-            <View style={styles.s2}>
+            {/* <View style={styles.s2}>
                 <Ionicons name="notifications" size={24} color="white" />
                 <Text style={styles.t1}>Inbox</Text>
-            </View>
+            </View> */}
         </View>
     )
 }
