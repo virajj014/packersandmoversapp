@@ -131,8 +131,8 @@ const PackingListEdit = ({ navigation, route }) => {
             userid = data.userdata._id
 
             // console.log(userid + '/' + doctype + '/' + docid)
-            // Linking.openURL(`https://packersandmoversweb.vercel.app/bill/${userid}/${doctype}/${docid}`)
-            navigation.navigate('PrintDoc', { userid: userid, doctype: doctype, docid: docid })
+            Linking.openURL(`https://packersandmoversweb.vercel.app/bill/${userid}/${doctype}/${docid}`)
+            // navigation.navigate('PrintDoc', { userid: userid, doctype: doctype, docid: docid })
           })
           .catch(err => {
             console.log(err)
