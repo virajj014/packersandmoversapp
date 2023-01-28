@@ -502,5 +502,10 @@ const styles = StyleSheet.create({
   val1:{
     color: '#000',
     fontSize: 12,
+  },
+  h3:{
+    fontSize: 13,
+    color: '#000',
+    fontWeight: 'bold',
   }
 })

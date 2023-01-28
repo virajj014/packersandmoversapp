@@ -1,13 +1,14 @@
-import { StyleSheet, Text, View, Image, TextInput } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { fullbg1, head1, padding10, text1, formcont1, label, fontcont1in, input, colors, formcont2, link1, button, link21, link22 } from '../../../CommonStyles/Theme'
 import logo from '../../../Media/Images/whitelogofull.png'
-import  Entypo  from 'react-native-vector-icons/Entypo';
+import Entypo from 'react-native-vector-icons/Entypo';
 import envs from '../../../env'
 
 
 const ForgotPasswordReset = ({ navigation, route }) => {
     const { token } = route.params;
+    const [loading, setLoading] = React.useState(false);
     if (token == undefined) {
         navigation.navigate('ForgotPasswordPhone');
     }
@@ -19,7 +20,9 @@ const ForgotPasswordReset = ({ navigation, route }) => {
 
     const handleresetpassword = () => {
 
+
         if (password == confirmpassword) {
+            setLoading(true);
             fetch(envs.BACKEND_URL + '/resetpassword', {
                 method: 'POST',
                 headers: {
@@ -32,7 +35,8 @@ const ForgotPasswordReset = ({ navigation, route }) => {
             })
                 .then((response) => response.json())
                 .then((json) => {
-                    console.log(json)
+                    // console.log(json)
+                    setLoading(false);
                     if (json.message == 'Password Changed Successfully') {
                         alert('Password changed successfully')
                         navigation.navigate('Login')
@@ -47,10 +51,14 @@ const ForgotPasswordReset = ({ navigation, route }) => {
                         setpassword('')
                     }
                 })
-                .catch((error) => alert('Unable to reset password! Please try again later.'))
+                .catch((error) => {
+                    alert('Unable to reset password! Please try again later.')
+                    setLoading(false);
+                })
 
         }
         else {
+            setLoading(false);
             alert('Passwords do not match')
             setconfirmpassword('')
             setpassword('')
@@ -97,11 +105,16 @@ const ForgotPasswordReset = ({ navigation, route }) => {
                 </View>
                 <View style={padding10} />
 
-                <Text style={button}
+                {
+                    loading ?
+                    <ActivityIndicator size="large" color={colors.primary} />
+                    :
+                    <Text style={button}
                     onPress={() => handleresetpassword()}
                 >
                     Update
                 </Text>
+                }
 
                 {/* <Text style={link21}>
                     Don't have an account? <Text style={link22}

@@ -1,12 +1,12 @@
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import React from 'react'
 import { colors } from '../../CommonStyles/Theme'
-import  Feather  from 'react-native-vector-icons/Feather';
+import Feather from 'react-native-vector-icons/Feather';
 import {
   formedit, sformcontainer, sformhead, sformhead2, sformcontainerin, sformcontainerin2, sformlabel, sformvalue, sformhr, formbtn, sforminput,
   sformlabelh, sformvalueh
 } from "../../CommonStyles/FormStyle"
-import  AntDesign  from 'react-native-vector-icons/AntDesign';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import envs from '../../env'
@@ -70,28 +70,51 @@ const PackingList = ({ navigation }) => {
   const getpackinglistss = async () => {
     AsyncStorage.getItem('token')
       .then(token => {
-        fetch(`${envs.BACKEND_URL}/getalldocs`, {
+        fetch(envs.BACKEND_URL + '/getuserdatafromtoken', {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json',
-            "Authorization": "Bearer " + token
+            Authorization: `Bearer ${token}`
           }
-        }).then(res => res.json())
-          .then(data => {
-            // console.log(data.quotationdetails);
-            if (data.message == "All Documents Fetched Successfully") {
-              setpackinglists(data.packinglists)
-              setbasicform(
-                {
-                  ...basicform,
-                  plnumber: `PL-${data.packinglists.length + 1}`
+        })
+          .then(res => res.json())
+          .then(userdata => {
+            if (userdata.error) {
+              navigation.navigate('Login');
+            }
+            else {
+              fetch(`${envs.BACKEND_URL}/getalldocs`, {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  "Authorization": "Bearer " + token
                 }
-              )
+              }).then(res => res.json())
+                .then(data => {
+                  // console.log(data.quotationdetails);
+                  if (data.message == "All Documents Fetched Successfully") {
+                    setpackinglists(data.packinglists)
+                  
+                    {
+                       userdata?.userdata?.customplnumber ? setbasicform({
+                        ...basicform,
+                        plnumber : `${userdata?.userdata?.customplnumber}-${data.packinglists.length + 1}`
+                       }) 
+                       : setbasicform({
+                        ...basicform,
+                        plnumber: `PL-${data.packinglists.length + 1}`
+                       })
+                    }
+                  }
+                })
+                .catch(err => {
+                  console.log("Error in getting old quotations ", err)
+                })
             }
           })
           .catch(err => {
-            console.log("Error in getting old quotations ", err)
+            navigation.navigate('Login')
           })
+
 
       })
       .catch(err => {

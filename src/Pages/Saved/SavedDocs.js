@@ -10,6 +10,7 @@ import nodoc from '../../Media/Images/nodoc.png'
 import envs from '../../env'
 const SavedDocs = ({ navigation, route }) => {
     const { doctype } = route.params;
+    const [loading, setLoading] = useState(false);
     const [doctype_open, setdocTypeOpen] = useState(false);
     const [doctype_value, setdocTypeValue] = useState('All');
     const [doctype_Array, setdocTypeArray] = useState([
@@ -17,7 +18,7 @@ const SavedDocs = ({ navigation, route }) => {
         { label: 'Quotation', value: 'Quotation' },
         { label: 'Bill', value: 'Invoice' },
         { label: 'PackingList', value: 'PackingList' },
-        { label: 'CarCondition', value: 'CarCondition' },
+        // { label: 'CarCondition', value: 'CarCondition' },
         { label: 'LrBilty', value: 'LrBilty' },
         { label: 'Reciept', value: 'Reciept' },
     ]);
@@ -30,6 +31,7 @@ const SavedDocs = ({ navigation, route }) => {
 
 
     const getAllDocs = () => {
+        setLoading(true)
         AsyncStorage.getItem('token')
             .then((token) => {
                 // console.log('All ',token)
@@ -42,6 +44,7 @@ const SavedDocs = ({ navigation, route }) => {
                 })
                     .then(res => res.json())
                     .then(data => {
+                        setLoading(false)
                         // console.log(data)
                         if (data.message == 'All Documents Fetched Successfully') {
                             console.log("All Docs Fetched Successfully")
@@ -55,6 +58,7 @@ const SavedDocs = ({ navigation, route }) => {
                     })
             })
             .catch((err) => {
+                setLoading(false)
                 navigation.navigate('Login')
             })
         // console.log('All')
@@ -193,10 +197,16 @@ const SavedDocs = ({ navigation, route }) => {
                                 }
 
                                 {
-                                    isalldocs == false &&
+                                    isalldocs == false && loading == false &&
                                     <View style={styles.nodocout}>
                                         <Image source={nodoc} style={styles.nodocimg} />
                                         <Text style={styles.nodocin}>No Documents Found</Text>
+                                    </View>
+                                }
+                                {
+                                    loading == true &&
+                                    <View style={styles.nodocout}>
+                                        <ActivityIndicator size="large" color={colors.primary} />
                                     </View>
                                 }
                             </View>
@@ -206,27 +216,35 @@ const SavedDocs = ({ navigation, route }) => {
                             doctype_value == 'Quotation' &&
                             <View style={styles.docIn}>
                                 {
-                                    docs?.quotationdetails?.length > 0 ?
+                                    docs?.quotationdetails?.length <= 0 && loading == false &&
+                                    <View style={styles.nodocout}>
+                                        <Image source={nodoc} style={styles.nodocimg} />
+                                        <Text style={styles.nodoctxt}>0 Quotations</Text>
+                                    </View>
+                                }
+                                {
+                                    docs?.quotationdetails?.length > 0 && loading == false &&
 
-                                        <View style={styles.docInType}>
-                                            <Text style={styles.dochead}>Quotations</Text>
-                                            <View style={styles.docitems}>
-                                                {
-                                                    docs?.quotationdetails?.map((item, index) => {
-                                                        return (
-                                                            <Card1 navigation={navigation} item={item} index={index} key={index}
-                                                                doctype={"Quotation"}
-                                                            />
-                                                        )
-                                                    })
-                                                }
-                                            </View>
+                                    <View style={styles.docInType}>
+                                        <Text style={styles.dochead}>Quotations</Text>
+                                        <View style={styles.docitems}>
+                                            {
+                                                docs?.quotationdetails?.map((item, index) => {
+                                                    return (
+                                                        <Card1 navigation={navigation} item={item} index={index} key={index}
+                                                            doctype={"Quotation"}
+                                                        />
+                                                    )
+                                                })
+                                            }
                                         </View>
-                                        :
-                                        <View style={styles.nodocout}>
-                                            <Image source={nodoc} style={styles.nodocimg} />
-                                            <Text style={styles.nodoctxt}>0 Quotations</Text>
-                                        </View>
+                                    </View>
+                                }
+                                {
+                                    loading == true &&
+                                    <View style={styles.nodocout}>
+                                        <ActivityIndicator size="large" color={colors.primary} />
+                                    </View>
                                 }
                             </View>
                         }
@@ -236,24 +254,34 @@ const SavedDocs = ({ navigation, route }) => {
                             <View style={styles.docIn}>
 
                                 {
-                                    docs?.invoices?.length > 0 ?
-                                        <View style={styles.docInType}>
-                                            <Text style={styles.dochead}>Bills</Text>
-                                            {
-                                                docs?.invoices?.map((item, index) => {
-                                                    return (
-                                                        <Card1 navigation={navigation} item={item} index={index} key={index}
-                                                            doctype={"Invoice"}
-                                                        />
-                                                    )
-                                                })
-                                            }
-                                        </View>
-                                        :
-                                        <View style={styles.nodocout}>
-                                            <Image source={nodoc} style={styles.nodocimg} />
-                                            <Text style={styles.nodoctxt}>0 Bills</Text>
-                                        </View>
+                                    docs?.invoices?.length > 0 && loading == false &&
+                                    <View style={styles.docInType}>
+                                        <Text style={styles.dochead}>Bills</Text>
+                                        {
+                                            docs?.invoices?.map((item, index) => {
+                                                return (
+                                                    <Card1 navigation={navigation} item={item} index={index} key={index}
+                                                        doctype={"Invoice"}
+                                                    />
+                                                )
+                                            })
+                                        }
+                                    </View>
+
+                                }
+
+                                {
+                                    docs?.invoices?.length <= 0 && loading == false &&
+                                    <View style={styles.nodocout}>
+                                        <Image source={nodoc} style={styles.nodocimg} />
+                                        <Text style={styles.nodoctxt}>0 Bills</Text>
+                                    </View>
+                                }
+                                {
+                                    loading == true &&
+                                    <View style={styles.nodocout}>
+                                        <ActivityIndicator size="large" color={colors.primary} />
+                                    </View>
                                 }
                             </View>
                         }
@@ -261,24 +289,34 @@ const SavedDocs = ({ navigation, route }) => {
                             doctype_value == 'PackingList' &&
                             <View style={styles.docIn}>
                                 {
-                                    docs?.packinglists?.length > 0 ?
-                                        <View style={styles.docInType}>
-                                            <Text style={styles.dochead}>PackingList</Text>
-                                            {
-                                                docs?.packinglists?.map((item, index) => {
-                                                    return (
-                                                        <Card1 navigation={navigation} item={item} index={index} key={index}
-                                                            doctype={"PackingList"}
-                                                        />
-                                                    )
-                                                })
-                                            }
-                                        </View>
-                                        :
-                                        <View style={styles.nodocout}>
-                                            <Image source={nodoc} style={styles.nodocimg} />
-                                            <Text style={styles.nodoctxt}>0 Packing Lists</Text>
-                                        </View>
+                                    docs?.packinglists?.length > 0 && loading == false &&
+                                    <View style={styles.docInType}>
+                                        <Text style={styles.dochead}>PackingList</Text>
+                                        {
+                                            docs?.packinglists?.map((item, index) => {
+                                                return (
+                                                    <Card1 navigation={navigation} item={item} index={index} key={index}
+                                                        doctype={"PackingList"}
+                                                    />
+                                                )
+                                            })
+                                        }
+                                    </View>
+
+                                }
+                                {
+                                    docs?.packinglists?.length <= 0 && loading == false &&
+
+                                    <View style={styles.nodocout}>
+                                        <Image source={nodoc} style={styles.nodocimg} />
+                                        <Text style={styles.nodoctxt}>0 Packing Lists</Text>
+                                    </View>
+                                }
+                                {
+                                    loading == true &&
+                                    <View style={styles.nodocout}>
+                                        <ActivityIndicator size="large" color={colors.primary} />
+                                    </View>
                                 }
                             </View>
                         }
@@ -288,25 +326,35 @@ const SavedDocs = ({ navigation, route }) => {
                             doctype_value == 'CarCondition' &&
                             <View style={styles.docIn}>
                                 {
-                                    docs?.vehiclesdetails?.length > 0 ?
-                                        <View style={styles.docInType}>
-                                            <Text style={styles.dochead}>CarCondition</Text>
-                                            {
-                                                docs?.vehiclesdetails?.map((item, index) => {
-                                                    return (
-                                                        <Card1 navigation={navigation} item={item} index={index} key={index}
-                                                            doctype={"CarCondition"}
-                                                        />
-                                                    )
-                                                })
-                                            }
-                                        </View>
+                                    docs?.vehiclesdetails?.length > 0 && loading == false &&
+                                    <View style={styles.docInType}>
+                                        <Text style={styles.dochead}>CarCondition</Text>
+                                        {
+                                            docs?.vehiclesdetails?.map((item, index) => {
+                                                return (
+                                                    <Card1 navigation={navigation} item={item} index={index} key={index}
+                                                        doctype={"CarCondition"}
+                                                    />
+                                                )
+                                            })
+                                        }
+                                    </View>
 
-                                        :
-                                        <View style={styles.nodocout}>
-                                            <Image source={nodoc} style={styles.nodocimg} />
-                                            <Text style={styles.nodoctxt}>0 Vehicles</Text>
-                                        </View>
+                                }
+                                {
+                                    docs?.vehiclesdetails?.length <= 0 && loading == false &&
+
+                                    <View style={styles.nodocout}>
+                                        <Image source={nodoc} style={styles.nodocimg} />
+                                        <Text style={styles.nodoctxt}>0 Vehicles</Text>
+                                    </View>
+                                }
+
+                                {
+                                    loading == true &&
+                                    <View style={styles.nodocout}>
+                                        <ActivityIndicator size="large" color={colors.primary} />
+                                    </View>
                                 }
                             </View>
                         }
@@ -314,24 +362,35 @@ const SavedDocs = ({ navigation, route }) => {
                             doctype_value == 'LrBilty' &&
                             <View style={styles.docIn}>
                                 {
-                                    docs?.lrbilties?.length > 0 ?
-                                        <View style={styles.docInType}>
-                                            <Text style={styles.dochead}>LrBilty</Text>
-                                            {
-                                                docs?.lrbilties?.map((item, index) => {
-                                                    return (
-                                                        <Card1 navigation={navigation} item={item} index={index} key={index}
-                                                            doctype={"LrBilty"}
-                                                        />
-                                                    )
-                                                })
-                                            }
-                                        </View>
-                                        :
-                                        <View style={styles.nodocout}>
-                                            <Image source={nodoc} style={styles.nodocimg} />
-                                            <Text style={styles.nodoctxt}>0 LR Bilties</Text>
-                                        </View>
+                                    docs?.lrbilties?.length > 0 && loading == false &&
+                                    <View style={styles.docInType}>
+                                        <Text style={styles.dochead}>LrBilty</Text>
+                                        {
+                                            docs?.lrbilties?.map((item, index) => {
+                                                return (
+                                                    <Card1 navigation={navigation} item={item} index={index} key={index}
+                                                        doctype={"LrBilty"}
+                                                    />
+                                                )
+                                            })
+                                        }
+                                    </View>
+
+                                }
+                                {
+                                    docs?.lrbilties?.length <= 0 && loading == false &&
+
+                                    <View style={styles.nodocout}>
+                                        <Image source={nodoc} style={styles.nodocimg} />
+                                        <Text style={styles.nodoctxt}>0 LR Bilties</Text>
+                                    </View>
+                                }
+
+                                {
+                                    loading == true &&
+                                    <View style={styles.nodocout}>
+                                        <ActivityIndicator size="large" color={colors.primary} />
+                                    </View>
                                 }
                             </View>
                         }
@@ -339,24 +398,33 @@ const SavedDocs = ({ navigation, route }) => {
                             doctype_value == 'Reciept' &&
                             <View style={styles.docIn}>
                                 {
-                                    docs?.reciepts?.length > 0 ?
-                                        <View style={styles.docInType}>
-                                            <Text style={styles.dochead}>Reciept</Text>
-                                            {
-                                                docs?.reciepts?.map((item, index) => {
-                                                    return (
-                                                        <Card1 navigation={navigation} item={item} index={index} key={index}
-                                                            doctype={"Reciept"}
-                                                        />
-                                                    )
-                                                })
-                                            }
-                                        </View>
-                                        :
-                                        <View style={styles.nodocout}>
-                                            <Image source={nodoc} style={styles.nodocimg} />
-                                            <Text style={styles.nodoctxt}>0 Reciepts</Text>
-                                        </View>
+                                    docs?.reciepts?.length > 0 && loading == false &&
+                                    <View style={styles.docInType}>
+                                        <Text style={styles.dochead}>Reciept</Text>
+                                        {
+                                            docs?.reciepts?.map((item, index) => {
+                                                return (
+                                                    <Card1 navigation={navigation} item={item} index={index} key={index}
+                                                        doctype={"Reciept"}
+                                                    />
+                                                )
+                                            })
+                                        }
+                                    </View>
+
+                                }
+                                {
+                                    docs?.reciepts?.length <= 0 && loading == false &&
+                                    <View style={styles.nodocout}>
+                                        <Image source={nodoc} style={styles.nodocimg} />
+                                        <Text style={styles.nodoctxt}>0 Reciepts</Text>
+                                    </View>
+                                }
+                                {
+                                    loading == true &&
+                                    <View style={styles.nodocout}>
+                                        <ActivityIndicator size="large" color={colors.primary} />
+                                    </View>
                                 }
                             </View>
                         }

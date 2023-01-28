@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TextInput } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { fullbg1, head1, padding10, text1, formcont1, label1, fontcont1in1, input1, colors, formcont2, link1, button1, link31, link32 } from '../../../CommonStyles/Theme'
 import logo from '../../../Media/Images/ThemeLogoFull.png'
@@ -8,7 +8,9 @@ import envs from '../../../env'
 
 const ForgotPasswordPhone = ({navigation}) => {
     const [phonenumber, setphonenumber] = React.useState('')
+    const [loading, setLoading] = React.useState(false);
     const sendotptophone = () => {
+        setLoading(true);
         fetch(envs.BACKEND_URL+'/sendotpfp',{
             method: 'POST',
             headers: {  
@@ -21,6 +23,7 @@ const ForgotPasswordPhone = ({navigation}) => {
             .then((response) => response.json())
             .then((json) => {
                 // console.log(json.message)
+                setLoading(false)
                 if(json.message == 'OTP sent successfully'){
                     alert('OTP sent successfully')
                     navigation.navigate('ForgotPasswordOtp', {token: json.token, otp: json.otp,phonenumber:phonenumber})
@@ -32,6 +35,10 @@ const ForgotPasswordPhone = ({navigation}) => {
                     alert('Invalid phone number')
                 }
             })
+            .catch((error) => {
+                setLoading(false)
+                alert('Something went wrong');
+            });
     }
 
     return (
@@ -51,9 +58,13 @@ const ForgotPasswordPhone = ({navigation}) => {
                         maxLength={10}
                         />
                     </View>
-                    <Text style={button1}
-                     onPress={() => sendotptophone()}
-                    >GET OTP</Text>
+                    {
+                        loading ? 
+                         <ActivityIndicator size="large" color={colors.primary} />
+                        : <Text style={button1}
+                        onPress={() => sendotptophone()}
+                       >GET OTP</Text>
+                    }
                     <Text style={link31}>
                         Already have an account? <Text style={link32} onPress={() => navigation.navigate('Login')}
                         >Login</Text>

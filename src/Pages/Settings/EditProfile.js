@@ -18,6 +18,8 @@ const EditProfile = ({ navigation }) => {
     const [signature, setSignature] = React.useState(null);
     const [stamp, setStamp] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
+
+    // company mobile , email , gstin , aadhar , pan , bank name , account number , branch & ifsc code
     useEffect(() => {
         getuserdata();
     }, [])
@@ -127,6 +129,7 @@ const EditProfile = ({ navigation }) => {
 
     const [userdata, setuserdata] = React.useState([])
     const getuserdata = () => {
+        setLoading(true);
         AsyncStorage.getItem('token')
             .then((token) => {
                 // console.log(token);
@@ -138,6 +141,7 @@ const EditProfile = ({ navigation }) => {
                 })
                     .then(res => res.json())
                     .then(data => {
+                        setLoading(false);
                         setuserdata(data.userdata)
                         setprofileimage(data.userdata.profilepic)
                         setcompanylogo(data.userdata.parentcompanylogo)
@@ -147,12 +151,14 @@ const EditProfile = ({ navigation }) => {
                         console.log(data.userdata);
                     })
                     .catch(err => {
+                        setLoading(false);
                         handleLogout();
                         console.log(err);
                     })
             })
     }
     const updateuserdata = () => {
+        setLoading(true);
         AsyncStorage.getItem('token')
             .then((token) => {
                 fetch(envs.BACKEND_URL + '/updateuserdetails', {
@@ -167,17 +173,44 @@ const EditProfile = ({ navigation }) => {
                         address: userdata.address,
                         companyname: userdata.companyname,
                         phonenumber: userdata.phonenumber,
-                        profilepic: profileimage
+                        profilepic: profileimage,
+                        parentcompanylogo: companylogo,
+                        yourcompanylogo: yourlogo,
+                        signature: signature,
+                        stamp: stamp,
+                        companymobile: userdata.companymobile,
+                        companyemail: userdata.companyemail,
+                        companyaddress: userdata.companyaddress,
+                        gstin: userdata.gstin,
+                        pannumber: userdata.pannumber,
+                        bankname: userdata.bankname,
+                        accountnumber: userdata.accountnumber,
+                        ifsc: userdata.ifsc,
+                        branch: userdata.branch,
+                        aadharnumber: userdata.aadharnumber,
+                        invoiceterms: userdata.invoiceterms,
+                        quotationterms: userdata.quotationterms,
+                        lrbiltyterms: userdata.lrbiltyterms,
+                        receiptterms: userdata.receiptterms,
+                        plterms: userdata.plterms,
+
+                        custominvoicenumber: userdata.custominvoicenumber,
+                        customquotationnumber: userdata.customquotationnumber,
+                        customlrbiltynumber: userdata.customlrbiltynumber,
+                        customreceiptnumber: userdata.customreceiptnumber,
+                        customplnumber: userdata.customplnumber,
                     })
                 })
                     .then(res => res.json())
                     .then(data => {
                         // console.log(data);
+                        setLoading(false);
                         getuserdata();
                         alert('Userdata updated successfully');
                     })
             })
             .catch((err) => {
+                setLoading(false);
                 alert('You are not logged in');
                 navigation.navigate('Login');
             })
@@ -188,132 +221,269 @@ const EditProfile = ({ navigation }) => {
         <ScrollView style={styles.container}>
             {
                 loading ?
-                    <View style={styles.profileimgout}>
-                        {/* {
-            profileimage ? <Image source={{ uri: profileimage }} style={styles.profileimage} /> : <Image source={nouser} style={styles.profileimage} />
-        } */}
-
-                        <View style={styles.profileimage1} >
-                            <ActivityIndicator size="large" color="black" />
-                        </View>
-                    </View>
+                    <ActivityIndicator size="large" color="black" />
                     :
-                    <View style={styles.profileimgout}>
-                        {/* {
-                    profileimage ? <Image source={{ uri: profileimage }} style={styles.profileimage} /> : <Image source={nouser} style={styles.profileimage} />
-                } */}
+                    <ScrollView style={styles.container}>
+                        {
+                            loading ?
+                                <View style={styles.profileimgout}>
 
-                        <Image source={profileimage !== "" && { uri: profileimage }} style={styles.profileimage}
-                            onPress={() => pickImage('profilepic')}
-                        />
-                        <Ionicons name="add-circle-sharp" size={24} color="black"
-                            style={styles.addicon}
-                            onPress={() => pickImage('profilepic')}
-                        />
-                    </View>
+
+                                    <View style={styles.profileimage1} >
+                                        <ActivityIndicator size="large" color="black" />
+                                    </View>
+                                </View>
+                                :
+                                <View style={styles.profileimgout}>
+
+                                    <Image source={profileimage !== "" && { uri: profileimage }} style={styles.profileimage}
+                                        onPress={() => pickImage('profilepic')}
+                                    />
+                                    <Ionicons name="add-circle-sharp" size={24} color="black"
+                                        style={styles.addicon}
+                                        onPress={() => pickImage('profilepic')}
+                                    />
+                                </View>
+                        }
+
+                        <View style={styles.formcont}>
+                            <Text style={styles.formhead}>Personal Details</Text>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>Name</Text>
+                                <TextInput style={styles.forminput} value={userdata.name} onChangeText={(text) => setuserdata({ ...userdata, name: text })}></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>Email</Text>
+                                <TextInput style={styles.forminput} value={userdata.email} onChangeText={(text) => setuserdata({ ...userdata, email: text })}></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>Phone</Text>
+                                <Text style={styles.forminput1}
+                                >
+                                    {userdata.phonenumber}
+                                </Text>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>Address</Text>
+                                <TextInput style={styles.forminput} value={userdata.address ? userdata.address : "- - - -"} onChangeText={(text) => setuserdata({ ...userdata, address: text })}
+                                ></TextInput>
+                            </View>
+
+                            <Text style={styles.formhead}>Company Details</Text>
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>Company Name</Text>
+                                <TextInput style={styles.forminput} value={userdata.companyname} onChangeText={(text) => setuserdata({ ...userdata, companyname: text })}></TextInput>
+                            </View>
+                            {/* companymobile , email , gstin , aadhar , pan , bank name , account number , branch & ifsc code */}
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>Company Mobile</Text>
+                                <TextInput style={styles.forminput} value={userdata.companymobile} onChangeText={(text) => setuserdata({ ...userdata, companymobile: text })}></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>Company Email</Text>
+                                <TextInput style={styles.forminput} value={userdata.companyemail} onChangeText={(text) => setuserdata({ ...userdata, companyemail: text })}></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>GSTIN</Text>
+                                <TextInput style={styles.forminput} value={userdata.gstin} onChangeText={(text) => setuserdata({ ...userdata, gstin: text })}></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>Aadhar Number</Text>
+                                <TextInput style={styles.forminput} value={userdata.aadharnumber} onChangeText={(text) => setuserdata({ ...userdata, aadharnumber: text })}></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>PAN Number</Text>
+                                <TextInput style={styles.forminput} value={userdata.pannumber} onChangeText={(text) => setuserdata({ ...userdata, pannumber: text })}></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>Bank Name</Text>
+                                <TextInput style={styles.forminput} value={userdata.bankname} onChangeText={(text) => setuserdata({ ...userdata, bankname: text })}></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>Account Number</Text>
+                                <TextInput style={styles.forminput} value={userdata.accountnumber} onChangeText={(text) => setuserdata({ ...userdata, accountnumber: text })}></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>Branch</Text>
+                                <TextInput style={styles.forminput} value={userdata.branch} onChangeText={(text) => setuserdata({ ...userdata, branch: text })}></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>IFSC Code</Text>
+                                <TextInput style={styles.forminput} value={userdata.ifsc} onChangeText={(text) => setuserdata({ ...userdata, ifsc: text })}></TextInput>
+                            </View>
+
+                            <TouchableOpacity
+                                onPress={updateuserdata}
+                            >
+                                <View style={styles.formbtn}>
+                                    <Text
+                                        style={styles.formbtntext}
+                                    >Update</Text>
+                                    <Feather name="edit" size={24} color="black"
+                                        style={styles.formbtnicon}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.formcont}>
+                            <Text style={styles.formhead}>Logos</Text>
+                            <View style={styles.formcontlogos}>
+                                {
+                                    companylogo ?
+                                        <TouchableOpacity onPress={() => pickImage('parentcompanylogo')}>
+                                            <Text style={styles.formlabel}>Parent Company</Text>
+                                            <Image source={{ uri: companylogo }} style={styles.formlogo}
+
+                                            />
+                                        </TouchableOpacity>
+                                        :
+                                        <Text style={styles.formlogo}
+                                            onPress={() => pickImage('parentcompanylogo')}
+                                        >Parent Company Logo</Text>
+                                }
+                                {
+                                    yourlogo ?
+                                        <TouchableOpacity onPress={() => pickImage('yourcompanylogo')}>
+                                            <Text style={styles.formlabel}>Your Company</Text>
+                                            <Image source={{ uri: yourlogo }} style={styles.formlogo}
+
+                                            />
+                                        </TouchableOpacity>
+                                        :
+                                        <Text style={styles.formlogo}
+                                            onPress={() => pickImage('yourcompanylogo')}
+                                        >Your Company Logo</Text>
+
+                                }
+                            </View>
+
+                            <View style={styles.formcontlogos}>
+                                {
+                                    signature ?
+                                        <TouchableOpacity onPress={() => pickImage('signature')}>
+                                            <Text>Signature</Text>
+                                            <Image source={{ uri: signature }} style={styles.formlogo}
+
+                                            />
+                                        </TouchableOpacity>
+                                        :
+                                        <Text style={styles.formlogo}
+                                            onPress={() => pickImage('signature')}
+                                        >Signature</Text>
+                                }
+                                {
+                                    stamp ?
+                                        <TouchableOpacity onPress={() => pickImage('stamp')}>
+                                            <Text>Stamp</Text>
+                                            <Image source={{ uri: stamp }} style={styles.formlogo}
+                                            />
+                                        </TouchableOpacity>
+                                        :
+                                        <Text style={styles.formlogo}
+                                            onPress={() => pickImage('stamp')}
+                                        >Stamp</Text>
+                                }
+                            </View>
+
+                            <TouchableOpacity
+                                onPress={updateuserdata}
+                            >
+                                <View style={styles.formbtn}>
+                                    <Text
+                                        style={styles.formbtntext}
+                                    >Update</Text>
+                                    <Feather name="edit" size={24} color="black"
+                                        style={styles.formbtnicon}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+
+                        <View style={styles.formcont}>
+                            <Text style={styles.formhead}>Custom Document Names</Text>
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>Invoice Number</Text>
+                                <TextInput style={styles.forminput} value={userdata.custominvoicenumber} onChangeText={(text) => setuserdata({ ...userdata, custominvoicenumber: text })}></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>Quotation Number</Text>
+                                <TextInput style={styles.forminput} value={userdata.customquotationnumber} onChangeText={(text) => setuserdata({ ...userdata, customquotationnumber: text })}></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>LrBilty Number</Text>
+                                <TextInput style={styles.forminput} value={userdata.customlrbiltynumber} onChangeText={(text) => setuserdata({ ...userdata, customlrbiltynumber: text })}></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>Reciept Number</Text>
+                                <TextInput style={styles.forminput} value={userdata.customreceiptnumber} onChangeText={(text) => setuserdata({ ...userdata, customreceiptnumber: text })}></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin}>
+                                <Text style={styles.formlabel}>PL Number</Text>
+                                <TextInput style={styles.forminput} value={userdata.customplnumber} onChangeText={(text) => setuserdata({ ...userdata, customplnumber: text })}></TextInput>
+                            </View>
+
+                            <Text style={styles.formhead}>T&C</Text>
+
+                            <View style={styles.formcontin1}>
+                                <Text style={styles.formlabel}>Invoice Terms & Conditions</Text>
+                                <TextInput style={styles.forminputtnc} value={userdata.invoiceterms} onChangeText={(text) => setuserdata({ ...userdata, invoiceterms: text })} multiline scrollEnabled></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin1}>
+                                <Text style={styles.formlabel}>Quotation Terms & Conditions</Text>
+                                <TextInput style={styles.forminputtnc} value={userdata.quotationterms} onChangeText={(text) => setuserdata({ ...userdata, quotationterms: text })} multiline scrollEnabled></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin1}>
+                                <Text style={styles.formlabel}>LR Bilty Terms & Conditions</Text>
+                                <TextInput style={styles.forminputtnc} value={userdata.lrbiltyterms} onChangeText={(text) => setuserdata({ ...userdata, lrbiltyterms: text })} multiline scrollEnabled></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin1}>
+                                <Text style={styles.formlabel}>Reciept Terms & Conditions</Text>
+
+                                <TextInput style={styles.forminputtnc} value={userdata.receiptterms} onChangeText={(text) => setuserdata({ ...userdata, receiptterms: text })} multiline scrollEnabled></TextInput>
+                            </View>
+
+                            <View style={styles.formcontin1}>
+                                <Text style={styles.formlabel}>PL Terms & Conditions</Text>
+                                <TextInput style={styles.forminputtnc} value={userdata.plterms} onChangeText={(text) => setuserdata({ ...userdata, plterms: text })} multiline scrollEnabled></TextInput>
+                            </View>
+
+                            <TouchableOpacity
+                                onPress={updateuserdata}
+                            >
+                                <View style={styles.formbtn}>
+                                    <Text
+                                        style={styles.formbtntext}
+                                    >Update</Text>
+                                    <Feather name="edit" size={24} color="black"
+                                        style={styles.formbtnicon}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </ScrollView>
             }
-
-            <View style={styles.formcont}>
-                <View style={styles.formcontin}>
-                    <Text style={styles.formlabel}>Name</Text>
-                    <TextInput style={styles.forminput} value={userdata.name} onChangeText={(text) => setuserdata({ ...userdata, name: text })}></TextInput>
-                </View>
-
-                <View style={styles.formcontin}>
-                    <Text style={styles.formlabel}>Email</Text>
-                    <TextInput style={styles.forminput} value={userdata.email} onChangeText={(text) => setuserdata({ ...userdata, email: text })}></TextInput>
-                </View>
-
-                <View style={styles.formcontin}>
-                    <Text style={styles.formlabel}>Phone</Text>
-                    <Text style={styles.forminput1}
-                    >
-                        {userdata.phonenumber}
-                    </Text>
-                </View>
-
-                <View style={styles.formcontin}>
-                    <Text style={styles.formlabel}>Address</Text>
-                    <TextInput style={styles.forminput} value={userdata.address?userdata.address:"- - - -"} onChangeText={(text) => setuserdata({ ...userdata, address: text })}
-                    ></TextInput>
-                </View>
-
-                <View style={styles.formcontin}>
-                    <Text style={styles.formlabel}>Company Name</Text>
-                    <TextInput style={styles.forminput} value={userdata.companyname} onChangeText={(text) => setuserdata({ ...userdata, companyname: text })}></TextInput>
-                </View>
-
-                <View style={styles.formcontlogos}>
-                    {
-                        companylogo ?
-                            <TouchableOpacity onPress={() => pickImage('parentcompanylogo')}>
-                                <Text>Parent Company</Text>
-                                <Image source={{ uri: companylogo }} style={styles.formlogo}
-                                
-                                />
-                            </TouchableOpacity>
-                            :
-                            <Text style={styles.formlogo}
-                                onPress={() => pickImage('parentcompanylogo')}
-                            >Parent Company Logo</Text>
-                    }
-                    {
-                        yourlogo ?
-                            <TouchableOpacity   onPress={() => pickImage('yourcompanylogo')}>
-                                <Text>Your Company</Text>
-                                <Image source={{ uri: yourlogo }} style={styles.formlogo}
-                                  
-                                />
-                            </TouchableOpacity>
-                            :
-                            <Text style={styles.formlogo}
-                                onPress={() => pickImage('yourcompanylogo')}
-                            >Your Company Logo</Text>
-
-                    }
-                </View>
-
-                <View style={styles.formcontlogos}>
-                    {
-                        signature ?
-                            <TouchableOpacity onPress={() => pickImage('signature')}>
-                                <Text>Signature</Text>
-                                <Image source={{ uri: signature }} style={styles.formlogo}
-                                    
-                                />
-                            </TouchableOpacity>
-                            :
-                            <Text style={styles.formlogo}
-                                onPress={() => pickImage('signature')}
-                            >Signature</Text>
-                    }
-                    {
-                        stamp ?
-                            <TouchableOpacity onPress={() => pickImage('stamp')}>
-                                <Text>Stamp</Text>
-                                <Image source={{ uri: stamp }} style={styles.formlogo}
-                                />
-                            </TouchableOpacity>
-                            :
-                            <Text style={styles.formlogo}
-                                onPress={() => pickImage('stamp')}
-                            >Stamp</Text>
-                    }
-                </View>
-
-                <TouchableOpacity
-                    onPress={updateuserdata}
-                >
-                    <View style={styles.formbtn}>
-                        <Text
-                            style={styles.formbtntext}
-                        >Update</Text>
-                        <Feather name="edit" size={24} color="black"
-                            style={styles.formbtnicon}
-                        />
-                    </View>
-                </TouchableOpacity>
-            </View>
         </ScrollView>
     )
 }
@@ -437,8 +607,22 @@ const styles = StyleSheet.create({
         padding: 10,
         textAlignVertical: 'center',
         borderStyle: 'dashed',
-        color :"black"
+        color: "black"
         // backgroundColor: colors.primary,
+    },
+    formhead: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: colors.quadinary,
+    },
+    forminputtnc: {
+        width: '100%',
+        borderWidth: 1,
+        borderColor: colors.quadinary,
+        fontSize: 15,
+        height: 200,
+        borderRadius: 5,
+        marginBottom: 10,
     }
 })
 

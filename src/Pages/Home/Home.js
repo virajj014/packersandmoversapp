@@ -1,22 +1,22 @@
-import { Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect } from 'react'
 import TopNavbar from '../../Components/TopNavbar/TopNavbar'
 import SubscriptionBar from '../../Components/Subscription/SubscriptionBar'
 import DocumentCategories from '../../Components/DocumentCategoriesIcon/DocumentCategories'
 import BottomNavbar from '../../Components/BottomNavbar/BottomNavbar'
 import { TextInput } from 'react-native'
-import  AntDesign  from 'react-native-vector-icons/AntDesign';
-import  Ionicons  from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors } from '../../CommonStyles/Theme';
 import nouser from '../../Media/Images/nouser.jpg'
 import Sidebar from '../../Components/Sidebar/Sidebar'
-import  Entypo  from 'react-native-vector-icons/Entypo';
+import Entypo from 'react-native-vector-icons/Entypo';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import envs from '../../env'
 import logo from '../../Media/Images/ThemeLogoFull.png'
 
 
-const Home = ({navigation}) => {
+const Home = ({ navigation }) => {
   React.useEffect(() => {
     AsyncStorage.getItem('token')
       .then((token) => {
@@ -26,13 +26,14 @@ const Home = ({navigation}) => {
       })
   }, [])
   const [showsidebar, setshowsidebar] = React.useState(false)
-
+  const [loading, setloading] = React.useState(false)
 
   const [userdata, setuserdata] = React.useState([])
   const getuserdata = () => {
+    setloading(true);
     AsyncStorage.getItem('token')
       .then((token) => {
-        // console.log(token);
+        console.log(token);
         fetch(envs.BACKEND_URL + '/getuserdatafromtoken', {
           method: 'GET',
           headers: {
@@ -41,59 +42,72 @@ const Home = ({navigation}) => {
         })
           .then(res => res.json())
           .then(data => {
-            setuserdata(data.userdata)
-            console.log(data.userdata);
+            setloading(false);
+            if (data.error) {
+              navigation.navigate('Login');
+            }
+            else {
+              setuserdata(data);
+            }
           })
           .catch(err => {
             console.log(err);
           })
+      })
+      .catch(err => {
+        setloading(false);
+        navigation.navigate('Login');
       })
   }
 
   useEffect(() => {
     setshowsidebar(false);
     getuserdata();
-  }, [])
+  }, [userdata.length==0])
   return (
     <View style={styles.container}>
-    <StatusBar style="auto" />
-    <ScrollView style={styles.containerin}>
-      <View style={styles.topnav} >
-        <TouchableOpacity onPress={() => {
-          setshowsidebar(true);
-          getuserdata();
-        }}>
-          <Image source={userdata.profilepic ?
-            { uri: userdata.profilepic }
-            :
-            nouser
-          } style={styles.userimg} />
-        </TouchableOpacity>
-        <View style={styles.searchbar}>
-          {/* <TextInput style={styles.input} placeholder='Search' />
+      <StatusBar style="auto" />
+      
+          <ScrollView style={styles.containerin}>
+            <View style={styles.topnav} >
+              <TouchableOpacity onPress={() => {
+                setshowsidebar(true);
+                getuserdata();
+              }}>
+                <Image source={userdata.profilepic ?
+                  { uri: userdata.profilepic }
+                  :
+                  nouser
+                } style={styles.userimg} />
+              </TouchableOpacity>
+              <View style={styles.searchbar}>
+                {/* <TextInput style={styles.input} placeholder='Search' />
           <AntDesign name="search1" size={24} color="black" /> */}
-        <Text style={{ color: colors.primary, fontSize: 20, padding: 10}}>Packers & Movers</Text>
-        {/* <Image source={logo} style={{ width: 70, height: 60, borderRadius: 20 }} /> */}
-        </View>
+                <Text style={{ color: colors.primary, fontSize: 20, padding: 10 }}>Packers & Movers</Text>
+                {/* <Image source={logo} style={{ width: 70, height: 60, borderRadius: 20 }} /> */}
+              </View>
+            </View>
+            {
+              showsidebar &&
+              <View style={styles.sidebar}>
+                <Entypo name="circle-with-cross" size={30} color="white" style={styles.icon}
+                  onPress={() => setshowsidebar(false)}
+                />
+                <Sidebar navigation={navigation} />
+              </View>
+            }
+            <Image source={require('../../Media/Images/banner.png')} style={{ width: '95%', height: 200, alignSelf: 'center' }} />
+            {
+              !loading && <SubscriptionBar navigation={navigation} data={userdata} />
+            }
+            <DocumentCategories navigation={navigation} />
+            {/* <DocumentCategories navigation={navigation} /> */}
+          </ScrollView>
+     
+      <View style={styles.bottomnav}>
+        <BottomNavbar navigation={navigation} pagename={"Home"} />
       </View>
-      {
-        showsidebar &&
-        <View style={styles.sidebar}>
-          <Entypo name="circle-with-cross" size={30} color="white" style={styles.icon}
-            onPress={() => setshowsidebar(false)}
-          />
-          <Sidebar navigation={navigation} />
-        </View>
-      }
-      <Image source={require('../../Media/Images/banner.png')} style={{ width: '95%', height: 200, alignSelf: 'center' }} />
-      <SubscriptionBar />
-      <DocumentCategories navigation={navigation} />
-      {/* <DocumentCategories navigation={navigation} /> */}
-    </ScrollView>
-    <View style={styles.bottomnav}>
-      <BottomNavbar navigation={navigation} pagename={"Home"} />
     </View>
-  </View>
   )
 }
 

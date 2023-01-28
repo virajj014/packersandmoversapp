@@ -42,7 +42,7 @@ const DocumentCategories = ({ navigation }) => {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Bill')} style={styles.s2}>
+        <TouchableOpacity onPress={() => navigation.navigate('Bill', {converteditem: {}})} style={styles.s2}>
           <View style={styles.s2in}>
             <Image source={bill} style={styles.icon} />
             <Text style={styles.t1}>Bill</Text>
@@ -86,7 +86,7 @@ const DocumentCategories = ({ navigation }) => {
 
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'Quotation' })}>
+        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'PackingList' })}>
           <View style={styles.s3in}>
             <Image source={packinglist} style={styles.icon1} />
             <Text style={styles.t3}>Packing List</Text>
@@ -96,7 +96,7 @@ const DocumentCategories = ({ navigation }) => {
           })} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'Quotation' })}>
+        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'CarCondition' })}>
           <View style={styles.s3in}>
             <Image source={carcondition} style={styles.icon1} />
             <Text style={styles.t3}>Car Condition</Text>
@@ -107,7 +107,7 @@ const DocumentCategories = ({ navigation }) => {
 
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'Quotation' })}>
+        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'Invoice' })}>
           <View style={styles.s3in}>
             <Image source={bill} style={styles.icon1} />
             <Text style={styles.t3}>Bill</Text>
@@ -131,7 +131,7 @@ const DocumentCategories = ({ navigation }) => {
           })} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'Quotation' })}>
+        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'Reciept' })}>
           <View style={styles.s3in}>
             <Image source={reciept} style={styles.icon1} />
             <Text style={styles.t3}>Reciept</Text>

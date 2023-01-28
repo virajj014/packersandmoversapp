@@ -7,7 +7,9 @@ import envs from '../../../env'
 
 const SignupPhone = ({navigation}) => {
     const [phonenumber, setphonenumber] = React.useState('')
+    const [loading, setLoading] = React.useState(false)
     const sendotptophone = () => {
+        setLoading(true)
         fetch(envs.BACKEND_URL+'/sendotp',{
             method: 'POST',
             headers: {  
@@ -20,6 +22,7 @@ const SignupPhone = ({navigation}) => {
             .then((response) => response.json())
             .then((json) => {
                 // console.log(json.message)
+                setLoading(false)
                 if(json.message == 'OTP sent successfully'){
                     alert('OTP sent successfully')
                     navigation.navigate('SignupOtp', {phonenumber: phonenumber, otp: json.otp})
@@ -30,6 +33,10 @@ const SignupPhone = ({navigation}) => {
                 else{
                     alert('Invalid phone number')
                 }
+            })
+            .catch((error) => {
+                setLoading(false)
+                alert('Something went wrong');
             })
     }
     return (
@@ -49,9 +56,14 @@ const SignupPhone = ({navigation}) => {
                         onChangeText={text => setphonenumber(text)}
                         />
                     </View>
-                    <Text style={button1}
-                     onPress={() => sendotptophone()}
-                    >GET OTP</Text>
+                    {
+                        loading ?
+                         <ActivityIndicator size="large" color={colors.primary} /> :  
+                        <Text style={button1}
+                        onPress={() => sendotptophone()}
+                       >GET OTP</Text>
+
+                    }
                     <Text style={link31}>
                         Already have an account? <Text style={link32} onPress={() => navigation.navigate('Login')}
                         >Login</Text>

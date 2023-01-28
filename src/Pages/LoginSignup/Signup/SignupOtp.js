@@ -1,25 +1,30 @@
-import { StyleSheet, Text, View, Image, TextInput } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { fullbg1, head1, padding10, text1, formcont1, label1, fontcont1in1, input1, colors, formcont2, link1, button1, link31, link32 } from '../../../CommonStyles/Theme'
 import logo from '../../../Media/Images/ThemeLogoFull.png'
-import  FontAwesome5  from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import envs from '../../../env'
 
 const SignupOtp = ({ navigation, route }) => {
     const { otp, phonenumber } = route.params;
-    if(otp == undefined || phonenumber == undefined) {
+    const [loading, setLoading] = React.useState(false);
+    if (otp == undefined || phonenumber == undefined) {
         navigation.navigate('SignupOtp');
     }
     console.log(otp)
 
     const [otpentered, setotpentered] = React.useState('');
     const verifyotp = () => {
+        setLoading(true);
         if (otpentered == otp || otpentered == '123456') {
             alert('OTP verified successfully')
-            navigation.navigate('SignupRestDetails',{phonenumber:phonenumber})
+            setLoading(false);
+            navigation.navigate('SignupRestDetails', { phonenumber: phonenumber })
+
         }
         else {
-            alert('Invalid OTP') 
+            setLoading(false);
+            alert('Invalid OTP')
         }
     }
     return (
@@ -38,9 +43,14 @@ const SignupOtp = ({ navigation, route }) => {
                             onChangeText={text => setotpentered(text)}
                         />
                     </View>
-                    <Text style={button1}
-                        onPress={() => verifyotp()}
-                    >VERIFY OTP</Text>
+                    {
+                        loading ?
+                            <ActivityIndicator size="large" color={colors.primary} />
+                            :
+                            <Text style={button1}
+                                onPress={() => verifyotp()}
+                            >VERIFY OTP</Text>
+                    }
                     <Text style={link31}>
                         Already have an account? <Text style={link32} onPress={() => navigation.navigate('Login')}
                         >Login</Text>

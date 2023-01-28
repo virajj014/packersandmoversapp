@@ -137,28 +137,51 @@ const LrBilty = ({ navigation }) => {
   const getoldlr = async () => {
     AsyncStorage.getItem('token')
       .then(token => {
-        fetch(`${envs.BACKEND_URL}/getalldocs`, {
+        fetch(envs.BACKEND_URL + '/getuserdatafromtoken', {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json',
-            "Authorization": "Bearer " + token
+            Authorization: `Bearer ${token}`
           }
-        }).then(res => res.json())
-          .then(data => {
-            // console.log(data.quotationdetails);
-            if (data.message == "All Documents Fetched Successfully") {
-              setoldlr(data.lrbilties)
-              setbasicform(
-                {
-                  ...basicform,
-                  biltynumber: `LR-${data.lrbilties.length + 1}`
+        })
+          .then(res => res.json())
+          .then(userdata => {
+            if (userdata.error) {
+              navigation.navigate('Login');
+            }
+            else {
+              fetch(`${envs.BACKEND_URL}/getalldocs`, {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  "Authorization": "Bearer " + token
                 }
-              )
+              }).then(res => res.json())
+                .then(data => {
+                  // console.log(data.quotationdetails);
+                  if (data.message == "All Documents Fetched Successfully") {
+                    setoldlr(data.lrbilties)
+                    {
+                      userdata?.userdata?.customlrbiltynumber ?
+                        setbasicform({ ...basicform, biltynumber: `${userdata?.userdata?.customlrbiltynumber}-${data.lrbilties.length + 1}` }) :
+                        setbasicform(
+                          {
+                            ...basicform,
+                            biltynumber: `LR-${data.lrbilties.length + 1}`
+                          }
+                        )
+                    }
+                  }
+                })
+                .catch(err => {
+                  console.log("Error in getting old quotations ", err)
+                })
             }
           })
           .catch(err => {
-            console.log("Error in getting old quotations ", err)
+            navigation.navigate('Login');
+
           })
+
 
       })
       .catch(err => {
@@ -212,39 +235,47 @@ const LrBilty = ({ navigation }) => {
   }
 
 
-const [getotal, setgetotal] = React.useState(0);
-const [gettotalpaid , settotalpaid] = React.useState(0);
-  React.useEffect(() => { 
-    const total = 
-    (eval(descriptionform.householditemswtcharged) >= 0 ? eval(descriptionform.householditemswtcharged) : 0)
-    + (eval (descriptionform.officeitemswtcharged) >= 0 ? eval(descriptionform.officeitemswtcharged) : 0)
-    + (eval (descriptionform.industrialitemswtcharged) >= 0 ? eval(descriptionform.industrialitemswtcharged) : 0)
-    + (eval (descriptionform.cartransportationwtcharged) >= 0 ? eval (descriptionform.cartransportationwtcharged) : 0)
-    + (eval (descriptionform.biketransportationwtcharged) >= 0 ? eval (descriptionform.biketransportationwtcharged) : 0) 
-    + (eval (descriptionform.asperlistattachedwtcharged) >= 0 ? eval (descriptionform.asperlistattachedwtcharged) : 0)
-    + (eval (costform.packingchargerate) >= 0 ? eval (costform.packingchargerate) : 0)
-    + (eval (costform.unpackingchargerate) >= 0 ? eval (costform.unpackingchargerate) : 0)
-    + (eval (costform.loadingchargerate) >= 0 ? eval (costform.loadingchargerate) : 0)
-    + (eval (costform.unloadingchargerate) >= 0 ? eval (costform.unloadingchargerate) : 0)
-    + (eval (costform.freightchargesrate) >= 0 ? eval (costform.freightchargesrate) : 0)
-    + (eval (costform.grchargerate) >= 0 ? eval (costform.grchargerate) : 0)
-    + (eval (costform.insurancechargesrate) >= 0 ? eval (costform.insurancechargesrate) : 0)
-    + (eval (costform.discount) >= 0 ? eval (costform.discount) : 0)
-    
+  const [getotal, setgetotal] = React.useState(0);
+  const [gettotalpaid, settotalpaid] = React.useState(0);
+  const [getgst, setgetgst] = React.useState(0);
+  const [getigst, setgetigst] = React.useState(0);
 
-    const tgst = total * (costform.gst / 100)  + total * (costform.igst / 100)
+  React.useEffect(() => {
+    const total =
+      (eval(descriptionform.householditemswtcharged) >= 0 ? eval(descriptionform.householditemswtcharged) : 0)
+      + (eval(descriptionform.officeitemswtcharged) >= 0 ? eval(descriptionform.officeitemswtcharged) : 0)
+      + (eval(descriptionform.industrialitemswtcharged) >= 0 ? eval(descriptionform.industrialitemswtcharged) : 0)
+      + (eval(descriptionform.cartransportationwtcharged) >= 0 ? eval(descriptionform.cartransportationwtcharged) : 0)
+      + (eval(descriptionform.biketransportationwtcharged) >= 0 ? eval(descriptionform.biketransportationwtcharged) : 0)
+      + (eval(descriptionform.asperlistattachedwtcharged) >= 0 ? eval(descriptionform.asperlistattachedwtcharged) : 0)
+      + (eval(costform.packingchargerate) >= 0 ? eval(costform.packingchargerate) : 0)
+      + (eval(costform.unpackingchargerate) >= 0 ? eval(costform.unpackingchargerate) : 0)
+      + (eval(costform.loadingchargerate) >= 0 ? eval(costform.loadingchargerate) : 0)
+      + (eval(costform.unloadingchargerate) >= 0 ? eval(costform.unloadingchargerate) : 0)
+      + (eval(costform.freightchargesrate) >= 0 ? eval(costform.freightchargesrate) : 0)
+      + (eval(costform.grchargerate) >= 0 ? eval(costform.grchargerate) : 0)
+      + (eval(costform.insurancechargesrate) >= 0 ? eval(costform.insurancechargesrate) : 0)
+      + (eval(costform.discount) >= 0 ? eval(costform.discount) : 0)
+
+
+    const tgst = total * (costform.gst / 100) + total * (costform.igst / 100)
     // console.log(tgst)
     const total1 = parseFloat(total) + parseFloat(tgst)
+    const gst = total * (costform.gst / 100)
+    const igst = total * (costform.igst / 100)
     setgetotal(total1)
+    setgetgst(gst)
+    setgetigst(igst)
 
-    const totalpaid = 
-    (eval(costform.packingchargepaid) >= 0 ? eval(costform.packingchargepaid) : 0)
-    + (eval (costform.unpackingchargepaid) >= 0 ? eval(costform.unpackingchargepaid) : 0)
-    + (eval (costform.loadingchargepaid) >= 0 ? eval(costform.loadingchargepaid) : 0)
-    + (eval (costform.unloadingchargepaid) >= 0 ? eval(costform.unloadingchargepaid) : 0)
-    + (eval (costform.freightchargespaid) >= 0 ? eval(costform.freightchargespaid) : 0)
-    + (eval (costform.grchargepaid) >= 0 ? eval(costform.grchargepaid) : 0)
-    + (eval (costform.insurancechargespaid) >= 0 ? eval(costform.insurancechargespaid) : 0)
+
+    const totalpaid =
+      (eval(costform.packingchargepaid) >= 0 ? eval(costform.packingchargepaid) : 0)
+      + (eval(costform.unpackingchargepaid) >= 0 ? eval(costform.unpackingchargepaid) : 0)
+      + (eval(costform.loadingchargepaid) >= 0 ? eval(costform.loadingchargepaid) : 0)
+      + (eval(costform.unloadingchargepaid) >= 0 ? eval(costform.unloadingchargepaid) : 0)
+      + (eval(costform.freightchargespaid) >= 0 ? eval(costform.freightchargespaid) : 0)
+      + (eval(costform.grchargepaid) >= 0 ? eval(costform.grchargepaid) : 0)
+      + (eval(costform.insurancechargespaid) >= 0 ? eval(costform.insurancechargespaid) : 0)
 
     settotalpaid(totalpaid)
   }, [costform, descriptionform])
@@ -260,10 +291,10 @@ const [gettotalpaid , settotalpaid] = React.useState(0);
           <ScrollView>
             <View style={sformcontainer}>
               <Text style={sformhead}>Basic Details</Text>
-              <View style={sformcontainerin}>
+              {/* <View style={sformcontainerin}>
                 <Text style={sformlabel}>Bilty Number</Text>
                 <TextInput style={sforminput} value={basicform?.biltynumber} onChangeText={(text) => setbasicform({ ...basicform, biltynumber: text })} />
-              </View>
+              </View> */}
 
               <View style={sformcontainerin}>
                 <Text style={sformlabel}>Date</Text>
@@ -396,56 +427,56 @@ const [gettotalpaid , settotalpaid] = React.useState(0);
               <Text style={sformhead}>Charges Details</Text>
 
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Freight Charges</Text>
+                <Text style={sformhead2}>Freight Charges </Text>
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Freight Charges Rate</Text>
+                <Text style={sformlabel}>Freight Charges Rate (Rs.)</Text>
 
                 <TextInput style={sforminput} value={costform?.freightchargesrate} onChangeText={(text) => setcostform({ ...costform, freightchargesrate: text })} />
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Freight Charges Paid</Text>
+                <Text style={sformlabel}>Freight Charges Paid (Rs.)</Text>
                 <TextInput style={sforminput} value={costform?.freightchargespaid} onChangeText={(text) => setcostform({ ...costform, freightchargespaid: text })} />
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Freight Charges Due</Text>
+                <Text style={sformlabel}>Freight Charges Due (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.freightchargesrate - costform.freightchargespaid}</Text>
               </View>
 
               <View style={sformhr} />
 
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Loading Charges</Text>
+                <Text style={sformhead2}>Loading Charges </Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Loading Charges Rate</Text>
+                <Text style={sformlabel}>Loading Charges Rate (Rs.)</Text>
                 <TextInput style={sforminput} value={costform?.loadingchargerate} onChangeText={(text) => setcostform({ ...costform, loadingchargerate: text })} />
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Loading Charges Paid</Text>
+                <Text style={sformlabel}>Loading Charges Paid (Rs.)</Text>
                 <TextInput style={sforminput} value={costform?.loadingchargepaid} onChangeText={(text) => setcostform({ ...costform, loadingchargepaid: text })} />
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Loading Charges Due</Text>
+                <Text style={sformlabel}>Loading Charges Due (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.loadingchargerate - costform.loadingchargepaid}</Text>
               </View>
 
               <View style={sformhr} />
 
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Unloading Charges</Text>
+                <Text style={sformhead2}>Unloading Charges </Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Unloading Charges Rate</Text>
+                <Text style={sformlabel}>Unloading Charges Rate (Rs.)</Text>
                 <TextInput style={sforminput} value={costform?.unloadingchargerate} onChangeText={(text) => setcostform({ ...costform, unloadingchargerate: text })} />
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Unloading Charges Paid</Text>
+                <Text style={sformlabel}>Unloading Charges Paid (Rs.)</Text>
                 <TextInput style={sforminput} value={costform?.unloadingchargepaid} onChangeText={(text) => setcostform({ ...costform, unloadingchargepaid: text })} />
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Unloading Charges Due</Text>
+                <Text style={sformlabel}>Unloading Charges Due (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.unloadingchargerate - costform.unloadingchargepaid}</Text>
               </View>
 
@@ -455,66 +486,66 @@ const [gettotalpaid , settotalpaid] = React.useState(0);
                 <Text style={sformhead2}>G.R. Charge</Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>G.R. Charge Rate</Text>
+                <Text style={sformlabel}>G.R. Charge Rate (Rs.)</Text>
                 <TextInput style={sforminput} value={costform?.grchargerate} onChangeText={(text) => setcostform({ ...costform, grchargerate: text })} />
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>G.R. Charge Paid</Text>
+                <Text style={sformlabel}>G.R. Charge Paid (Rs.)</Text>
                 <TextInput style={sforminput} value={costform?.grchargepaid} onChangeText={(text) => setcostform({ ...costform, grchargepaid: text })} />
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>G.R. Charge Due</Text>
+                <Text style={sformlabel}>G.R. Charge Due (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.grchargerate - costform.grchargepaid}</Text>
               </View>
 
               <View style={sformhr} />
 
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Insurance Charges</Text>
+                <Text style={sformhead2}>Insurance Charges </Text>
 
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Insurance Charges Rate</Text>
+                <Text style={sformlabel}>Insurance Charges Rate (Rs.)</Text>
                 <TextInput style={sforminput} value={costform?.insurancechargesrate} onChangeText={(text) => setcostform({ ...costform, insurancechargesrate: text })} />
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Insurance Charges Paid</Text>
+                <Text style={sformlabel}>Insurance Charges Paid (Rs.)</Text>
                 <TextInput style={sforminput} value={costform?.insurancechargespaid} onChangeText={(text) => setcostform({ ...costform, insurancechargespaid: text })} />
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Insurance Charges Due</Text>
+                <Text style={sformlabel}>Insurance Charges Due (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.insurancechargesrate - costform.insurancechargespaid}</Text>
               </View>
 
               <View style={sformhr} />
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Other Charges</Text>
+                <Text style={sformhead2}>Other Charges (Rs.)</Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>discount</Text>
+                <Text style={sformlabel}>Discount (Rs.)</Text>
                 <TextInput style={sforminput} value={costform?.discount} onChangeText={(text) => setcostform({ ...costform, discount: text })} />
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>GST</Text>
+                <Text style={sformlabel}>GST %</Text>
                 <TextInput style={sforminput} value={costform?.gst} onChangeText={(text) => setcostform({ ...costform, gst: text })} />
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>CGST</Text>
+                <Text style={sformlabel}>CGST %</Text>
                 <Text style={sformvalue} > {costform?.gst / 2} %</Text>
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>SGST</Text>
+                <Text style={sformlabel}>SGST %</Text>
                 <Text style={sformvalue} > {costform?.gst / 2} %</Text>
 
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>IGST</Text>
+                <Text style={sformlabel}>IGST %</Text>
                 <TextInput style={sforminput} value={costform?.igst}
                   onChangeText={(text) => setcostform({ ...costform, igst: text })}
                 />
@@ -523,18 +554,27 @@ const [gettotalpaid , settotalpaid] = React.useState(0);
               <View style={sformhr} />
 
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Total Amount</Text>
+                <Text style={sformhead2}>GST (Rs.)</Text>
+                <Text style={sformvalue}>Rs. {getgst ? getgst : 0}</Text>
+              </View>
+              <View style={sformcontainerin2}>
+                <Text style={sformhead2}>IGST (Rs.)</Text>
+                <Text style={sformvalue}>Rs. {getigst ? getigst : 0}</Text>
+              </View>
+
+              <View style={sformcontainerin2}>
+                <Text style={sformhead2}>Total Amount (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{getotal}</Text>
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Total Amount Paid</Text>
+                <Text style={sformhead2}>Total Amount Paid (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{gettotalpaid}</Text>
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Total Amount Due</Text>
-                <Text style={sformvalue}>Rs.{getotal- gettotalpaid}</Text>
+                <Text style={sformhead2}>Total Amount Due (Rs.)</Text>
+                <Text style={sformvalue}>Rs.{getotal - gettotalpaid}</Text>
               </View>
             </View>
             {/* 
@@ -711,55 +751,55 @@ const [gettotalpaid , settotalpaid] = React.useState(0);
               <Text style={sformhead}>Charges Details</Text>
 
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Freight Charges</Text>
+                <Text style={sformhead2}>Freight Charges </Text>
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Freight Charges Rate</Text>
+                <Text style={sformlabel}>Freight Charges Rate (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.freightchargesrate}</Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Freight Charges Paid</Text>
+                <Text style={sformlabel}>Freight Charges Paid (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.freightchargespaid}</Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Freight Charges Due</Text>
+                <Text style={sformlabel}>Freight Charges Due (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.freightchargesrate - costform.freightchargespaid}</Text>
               </View>
 
               <View style={sformhr} />
 
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Loading Charges</Text>
+                <Text style={sformhead2}>Loading Charges </Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Loading Charges Rate</Text>
+                <Text style={sformlabel}>Loading Charges Rate (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.loadingchargerate}</Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Loading Charges Paid</Text>
+                <Text style={sformlabel}>Loading Charges Paid (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.loadingchargepaid}</Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Loading Charges Due</Text>
+                <Text style={sformlabel}>Loading Charges Due (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.loadingchargerate - costform.loadingchargepaid}</Text>
               </View>
 
               <View style={sformhr} />
 
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Unloading Charges</Text>
+                <Text style={sformhead2}>Unloading Charges </Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Unloading Charges Rate</Text>
+                <Text style={sformlabel}>Unloading Charges Rate (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.unloadingchargerate}</Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Unloading Charges Paid</Text>
+                <Text style={sformlabel}>Unloading Charges Paid (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.unloadingchargepaid}</Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Unloading Charges Due</Text>
+                <Text style={sformlabel}>Unloading Charges Due (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.unloadingchargerate - costform.unloadingchargepaid}</Text>
               </View>
 
@@ -769,82 +809,91 @@ const [gettotalpaid , settotalpaid] = React.useState(0);
                 <Text style={sformhead2}>G.R. Charge</Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>G.R. Charge Rate</Text>
+                <Text style={sformlabel}>G.R. Charge Rate (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.grchargerate}</Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>G.R. Charge Paid</Text>
+                <Text style={sformlabel}>G.R. Charge Paid (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.grchargepaid}</Text>
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>G.R. Charge Due</Text>
+                <Text style={sformlabel}>G.R. Charge Due (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.grchargerate - costform.grchargepaid}</Text>
               </View>
 
               <View style={sformhr} />
 
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Insurance Charges</Text>
+                <Text style={sformhead2}>Insurance Charges </Text>
 
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Insurance Charges Rate</Text>
+                <Text style={sformlabel}>Insurance Charges Rate (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.insurancechargesrate}</Text>
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Insurance Charges Paid</Text>
+                <Text style={sformlabel}>Insurance Charges Paid (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.insurancechargespaid}</Text>
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Insurance Charges Due</Text>
+                <Text style={sformlabel}>Insurance Charges Due (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.insurancechargesrate - costform.insurancechargespaid}</Text>
               </View>
 
               <View style={sformhr} />
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Other Charges</Text>
+                <Text style={sformhead2}>Other Charges </Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>discount</Text>
+                <Text style={sformlabel}>Discount (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{costform.discount}</Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>GST</Text>
+                <Text style={sformlabel}>GST %</Text>
                 <Text style={sformvalue}>{costform.gst > 0 ? costform.gst : 0}%</Text>
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>CGST</Text>
+                <Text style={sformlabel}>CGST %</Text>
                 <Text style={sformvalue}>{costform.gst > 0 ? costform.gst / 2 : 0}%</Text>
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>SGST</Text>
+                <Text style={sformlabel}>SGST %</Text>
                 <Text style={sformvalue}>{costform.gst > 0 ? costform.gst / 2 : 0}%</Text>
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>IGST</Text>
+                <Text style={sformlabel}>IGST %</Text>
                 <Text style={sformvalue}>{costform.igst > 0 ? costform.igst : 0}%</Text>
               </View>
 
               <View style={sformhr} />
 
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Total Amount</Text>
+                <Text style={sformhead2}>GST (Rs.)</Text>
+                <Text style={sformvalue}>Rs. {getgst ? getgst : 0}</Text>
+              </View>
+              <View style={sformcontainerin2}>
+                <Text style={sformhead2}>IGST (Rs.)</Text>
+                <Text style={sformvalue}>Rs. {getigst ? getigst : 0}</Text>
+              </View>
+
+              <View style={sformcontainerin2}>
+                <Text style={sformhead2}>Total Amount (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{getotal}</Text>
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Total Amount Paid</Text>
+                <Text style={sformhead2}>Total Amount Paid (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{gettotalpaid}</Text>
               </View>
 
               <View style={sformcontainerin2}>
-                <Text style={sformhead2}>Total Amount Due</Text>
+                <Text style={sformhead2}>Total Amount Due (Rs.)</Text>
                 <Text style={sformvalue}>Rs.{getotal - gettotalpaid}</Text>
               </View>
             </View>

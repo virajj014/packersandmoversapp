@@ -11,7 +11,7 @@ import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'reac
 
 const QuotationEdit = ({ navigation, route }) => {
     const { item } = route.params;
-
+    // console.log(item)
     const [oldquotations, setoldquotations] = React.useState([])
     const [editing, setediting] = React.useState(false)
     const [basicform, setbasicform] = React.useState({
@@ -21,7 +21,10 @@ const QuotationEdit = ({ navigation, route }) => {
         mobile: item.basicform.mobile,
         email: item.basicform.email,
         from: item.basicform.from,
-        to: item.basicform.to
+        to: item.basicform.to,
+        fromfloor: item.basicform.fromfloor,
+        tofloor: item.basicform.tofloor,
+        liftavailable: item.basicform.liftavailable,
     })
 
     const [costform, setcostform] = React.useState({
@@ -112,7 +115,7 @@ const QuotationEdit = ({ navigation, route }) => {
                 })
                     .then(res => res.json())
                     .then(data => {
-                        console.log(data)
+                        // console.log(data)
                         if (data.message == "Quotation Updated Successfully") {
                             // resetvalues()
                             setediting(false)
@@ -143,7 +146,8 @@ const QuotationEdit = ({ navigation, route }) => {
 
     const [getotal, setgetotal] = React.useState(0);
     const [getfinaltotal, setgetfinaltotal] = React.useState(0);
-
+    const [getgst, setgetgst] = React.useState(0);
+    const [getigst, setgetigst] = React.useState(0);
     React.useEffect(() => {
         const total =
             (eval(costform.packingcharge) >= 0 ? eval(costform.packingcharge) : 0)
@@ -159,19 +163,26 @@ const QuotationEdit = ({ navigation, route }) => {
         // console.log(total)
 
 
-        const tgst = total * (costform.gst / 100)  + total * (costform.igst / 100)
+        const tgst = total * (costform.gst / 100) + total * (costform.igst / 100)
         // console.log(tgst)
         const total1 = parseFloat(total) + parseFloat(tgst)
 
 
         setgetotal(total1)
         setgetfinaltotal(total1 - costform.discount)
-
+        const gst = total * (costform.gst / 100)
+        const igst = total * (costform.igst / 100)
+        setgetgst(gst)
+        setgetigst(igst)
     }, [costform])
 
     var radio_props = [
         { label: 'Within State', value: 0 },
         { label: 'Other State', value: 1 }
+    ];
+    var radio_props1 = [
+        { label: 'Lift Not Available', value: 0 },
+        { label: 'Lift Available', value: 1 }
     ];
 
 
@@ -197,9 +208,9 @@ const QuotationEdit = ({ navigation, route }) => {
                         console.log(userid + '/' + doctype + '/' + docid)
                         // https://packersandmoversweb.vercel.app/bill/${userid}/${doctype}/${docid}
 
-                        // Linking.openURL(`https://packersandmoversweb.vercel.app/bill/${userid}/${doctype}/${docid}`)
-                    navigation.navigate('PrintDoc', { userid: userid, doctype: doctype, docid: docid })
-                    
+                        Linking.openURL(`https://packersandmoversweb.vercel.app/bill/${userid}/${doctype}/${docid}`)
+                        // navigation.navigate('PrintDoc', { userid: userid, doctype: doctype, docid: docid })
+
                     })
                     .catch(err => {
                         console.log(err)
@@ -210,6 +221,13 @@ const QuotationEdit = ({ navigation, route }) => {
             })
 
     }
+
+
+    const converttoinvoice = async () => {
+        navigation.navigate('Bill', { converteditem: item })
+    }
+
+    const openpdfurl = async () => {}
     return (
         <View>
             {
@@ -251,13 +269,49 @@ const QuotationEdit = ({ navigation, route }) => {
                             </View>
 
                             <View style={sformcontainerin}>
-                                <Text style={sformlabel}>From</Text>
+                                <Text style={sformlabel}>From (city)</Text>
                                 <TextInput style={sforminput} value={basicform?.from} onChangeText={(text) => setbasicform({ ...basicform, from: text })} />
                             </View>
 
                             <View style={sformcontainerin}>
-                                <Text style={sformlabel}>To</Text>
+                                <Text style={sformlabel}>To (city)</Text>
                                 <TextInput style={sforminput} value={basicform?.to} onChangeText={(text) => setbasicform({ ...basicform, to: text })} />
+                            </View>
+
+                            {/* from floor , to floor */}
+
+                            <View style={sformcontainerin}>
+                                <Text style={sformlabel}>From (Floor)</Text>
+                                <TextInput style={sforminput} value={basicform?.fromfloor} onChangeText={(text) => setbasicform({ ...basicform, fromfloor: text })} keyboardType={'number-pad'} />
+                            </View>
+
+                            <View style={sformcontainerin}>
+                                <Text style={sformlabel}>To (Floor)</Text>
+                                <TextInput style={sforminput} value={basicform?.tofloor} onChangeText={(text) => setbasicform({ ...basicform, tofloor: text })} keyboardType={'number-pad'} />
+                            </View>
+
+                            <View style={sformcontainerin2}>
+                                <RadioForm
+                                    radio_props={radio_props1}
+                                    initial={
+                                        basicform?.liftavailable == 1 ? 1 : 0
+                                    }
+                                    onPress={(value) => { 
+                                         console.log(value)
+                                        setbasicform({ ...basicform, liftavailable: value }) }}
+
+                                    formHorizontal={true}
+                                    labelHorizontal={true}
+                                    buttonColor={colors.primary}
+                                    selectedButtonColor={colors.primary}
+                                    animation={true}
+                                    labelStyle={{ fontSize: 14, color: colors.primary, marginRight: 10 }}
+                                    buttonSize={10}
+                                    buttonOuterSize={20}
+                                    buttonStyle={{ marginRight: 10 }}
+                                    buttonWrapStyle={{ marginLeft: 10 }}
+                                />
+
                             </View>
                         </View>
 
@@ -268,12 +322,12 @@ const QuotationEdit = ({ navigation, route }) => {
                                 <Text style={sformhead2}>PACKING SUPPORT</Text>
                             </View>
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Packing Charges</Text>
+                                <Text style={sformlabel}>Packing Charges (Rs.)</Text>
                                 <TextInput style={sforminput} value={costform?.packingcharge} onChangeText={(text) => setcostform({ ...costform, packingcharge: text })} />
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Unpacking Charges</Text>
+                                <Text style={sformlabel}>Unpacking Charges (Rs.)</Text>
                                 <TextInput style={sforminput} value={costform?.unpackingcharge} onChangeText={(text) => setcostform({ ...costform, unpackingcharge: text })} />
                             </View>
                             <View style={sformhr}></View>
@@ -284,12 +338,12 @@ const QuotationEdit = ({ navigation, route }) => {
                                 <Text style={sformhead2}>HANDLING</Text>
                             </View>
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Loading Charges</Text>
+                                <Text style={sformlabel}>Loading Charges (Rs.)</Text>
                                 <TextInput style={sforminput} value={costform?.loadingcharge} onChangeText={(text) => setcostform({ ...costform, loadingcharge: text })} />
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Unloading Charges</Text>
+                                <Text style={sformlabel}>Unloading Charges (Rs.)</Text>
                                 <TextInput style={sforminput} value={costform?.unloadingcharge} onChangeText={(text) => setcostform({ ...costform, unloadingcharge: text })} />
                             </View>
 
@@ -302,7 +356,7 @@ const QuotationEdit = ({ navigation, route }) => {
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Pro Fright Charges</Text>
+                                <Text style={sformlabel}>Pro Fright Charges (Rs.)</Text>
                                 <TextInput style={sforminput} value={costform?.profright} onChangeText={(text) => setcostform({ ...costform, profright: text })} />
                             </View>
 
@@ -311,11 +365,11 @@ const QuotationEdit = ({ navigation, route }) => {
                                 <TextInput style={sforminput} value={costform?.cartransportation} onChangeText={(text) => setcostform({ ...costform, cartransportation: text })} />
                             </View>
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Handyman Charges</Text>
+                                <Text style={sformlabel}>Handyman Charges (Rs.)</Text>
                                 <TextInput style={sforminput} value={costform?.handymancharges} onChangeText={(text) => setcostform({ ...costform, handymancharges: text })} />
                             </View>
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Escort Charges</Text>
+                                <Text style={sformlabel}>Escort Charges (Rs.)</Text>
                                 <TextInput style={sforminput} value={costform?.escortcharges} onChangeText={(text) => setcostform({ ...costform, escortcharges: text })} />
                             </View>
                             <View style={sformhr}></View>
@@ -325,7 +379,7 @@ const QuotationEdit = ({ navigation, route }) => {
                                 <Text style={sformhead2}>LOGISTIC SUPPORT</Text>
                             </View>
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Insurance Charges</Text>
+                                <Text style={sformlabel}>Insurance Charges (Rs.)</Text>
                                 <TextInput style={sforminput} value={costform?.insurancecharges} onChangeText={(text) => setcostform({ ...costform, insurancecharges: text })} />
                             </View>
 
@@ -345,7 +399,7 @@ const QuotationEdit = ({ navigation, route }) => {
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Any Other Charges</Text>
+                                <Text style={sformlabel}>Any Other Charges (Rs.)</Text>
                                 <TextInput style={sforminput} value={costform?.anyothercharges} onChangeText={(text) => setcostform({ ...costform, anyothercharges: text })} />
                             </View>
 
@@ -388,23 +442,23 @@ const QuotationEdit = ({ navigation, route }) => {
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>GST</Text>
+                                <Text style={sformlabel}>GST %</Text>
                                 <TextInput style={sforminput} value={costform?.gst} onChangeText={(text) => setcostform({ ...costform, gst: text })} />
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>CGST</Text>
+                                <Text style={sformlabel}>CGST %</Text>
                                 <Text style={sformvalue} > {costform?.gst / 2} </Text>
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>SGST</Text>
+                                <Text style={sformlabel}>SGST %</Text>
                                 <Text style={sformvalue} > {costform?.gst / 2} </Text>
 
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>IGST</Text>
+                                <Text style={sformlabel}>IGST %</Text>
                                 <TextInput style={sforminput} value={costform?.igst}
                                     onChangeText={(text) => setcostform({ ...costform, igst: text })}
                                 />
@@ -413,20 +467,27 @@ const QuotationEdit = ({ navigation, route }) => {
 
 
                             <View style={sformhr}></View>
-
+                            <View style={sformcontainerin2}>
+                                <Text style={sformhead2}>GST (Rs.)</Text>
+                                <Text style={sformvalue}>Rs. {getgst ? getgst : 0}</Text>
+                            </View>
+                            <View style={sformcontainerin2}>
+                                <Text style={sformhead2}>IGST (Rs.)</Text>
+                                <Text style={sformvalue}>Rs. {getigst ? getigst : 0}</Text>
+                            </View>
                             {/*  */}
                             <View style={sformcontainerin2}>
-                                <Text style={sformhead2}>TOTAL</Text>
+                                <Text style={sformhead2}>TOTAL (Rs.)</Text>
                                 <Text style={sformvalue}>Rs. {getotal ? getotal : 0}</Text>
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformhead2}>DISCOUNT</Text>
+                                <Text style={sformhead2}>DISCOUNT (Rs.)</Text>
                                 <Text style={sformvalue}>Rs. {costform.discount}</Text>
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformhead2}>FINAL AMOUNT</Text>
+                                <Text style={sformhead2}>FINAL AMOUNT (Rs.)</Text>
                                 <Text style={sformvalue}>Rs. {getfinaltotal ? getfinaltotal : 0
                                 }</Text>
                             </View>
@@ -473,13 +534,31 @@ const QuotationEdit = ({ navigation, route }) => {
                             </View>
 
                             <View style={sformcontainerin}>
-                                <Text style={sformlabel}>From</Text>
+                                <Text style={sformlabel}>From (city)</Text>
                                 <Text style={sformvalue}>{basicform?.from}</Text>
                             </View>
 
                             <View style={sformcontainerin}>
-                                <Text style={sformlabel}>To</Text>
+                                <Text style={sformlabel}>To (city)</Text>
                                 <Text style={sformvalue}>{basicform?.to}</Text>
+                            </View>
+
+                            <View style={sformcontainerin}>
+                                {/* from (floor) */}
+                                <Text style={sformlabel}>From (floor)</Text>
+                                <Text style={sformvalue}>{basicform?.fromfloor}</Text>
+                            </View>
+
+                            <View style={sformcontainerin}>
+                                {/* to (floor) */}
+                                <Text style={sformlabel}>To (floor)</Text>
+                                <Text style={sformvalue}>{basicform?.tofloor}</Text>
+                            </View>
+
+                            {/* lift available */}
+                            <View style={sformcontainerin}>
+                                <Text style={sformlabel}>Lift Available</Text>
+                                <Text style={sformvalue}>{basicform?.liftavailable != 1 ? 'NO' : 'YES'}</Text>
                             </View>
                         </View>
 
@@ -490,14 +569,14 @@ const QuotationEdit = ({ navigation, route }) => {
                                 <Text style={sformhead2}>PACKING SUPPORT</Text>
                             </View>
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Packing Charges</Text>
+                                <Text style={sformlabel}>Packing Charges (Rs.)</Text>
                                 <Text style={sformvalue}>Rs. {
                                     costform?.packingcharge
                                 }</Text>
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Unpacking Charges</Text>
+                                <Text style={sformlabel}>Unpacking Charges (Rs.)</Text>
                                 <Text style={sformvalue}>Rs. {
                                     costform?.unpackingcharge
                                 }</Text>
@@ -510,14 +589,14 @@ const QuotationEdit = ({ navigation, route }) => {
                                 <Text style={sformhead2}>HANDLING</Text>
                             </View>
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Loading Charges</Text>
+                                <Text style={sformlabel}>Loading Charges (Rs.)</Text>
                                 <Text style={sformvalue}>Rs. {
                                     costform?.loadingcharge
                                 }</Text>
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Unloading Charges</Text>
+                                <Text style={sformlabel}>Unloading Charges (Rs.)</Text>
                                 <Text style={sformvalue}>Rs. {costform.unloadingcharge}</Text>
                             </View>
 
@@ -530,7 +609,7 @@ const QuotationEdit = ({ navigation, route }) => {
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Pro Fright Charges</Text>
+                                <Text style={sformlabel}>Pro Fright Charges (Rs.)</Text>
                                 <Text style={sformvalue}>Rs. {costform.profright}</Text>
                             </View>
 
@@ -539,11 +618,11 @@ const QuotationEdit = ({ navigation, route }) => {
                                 <Text style={sformvalue}>Rs. {costform.cartransportation}</Text>
                             </View>
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Handyman Charges</Text>
+                                <Text style={sformlabel}>Handyman Charges (Rs.)</Text>
                                 <Text style={sformvalue}>Rs. {costform.handymancharges}</Text>
                             </View>
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Escort Charges</Text>
+                                <Text style={sformlabel}>Escort Charges (Rs.)</Text>
                                 <Text style={sformvalue}>Rs. {costform.escortcharges}</Text>
                             </View>
                             <View style={sformhr}></View>
@@ -553,7 +632,7 @@ const QuotationEdit = ({ navigation, route }) => {
                                 <Text style={sformhead2}>LOGISTIC SUPPORT</Text>
                             </View>
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Insurance Charges</Text>
+                                <Text style={sformlabel}>Insurance Charges (Rs.)</Text>
                                 <Text style={sformvalue}>Rs. {costform.insurancecharges}</Text>
                             </View>
 
@@ -573,7 +652,7 @@ const QuotationEdit = ({ navigation, route }) => {
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>Any Other Charges</Text>
+                                <Text style={sformlabel}>Any Other Charges (Rs.)</Text>
                                 <Text style={sformvalue}>{costform.anyothercharges}</Text>
                             </View>
 
@@ -599,42 +678,49 @@ const QuotationEdit = ({ navigation, route }) => {
                                 }
                             </View>
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>GST</Text>
+                                <Text style={sformlabel}>GST %</Text>
                                 <Text style={sformvalue}>{costform.gst > 0 ? costform.gst : 0}%</Text>
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>CGST</Text>
+                                <Text style={sformlabel}>CGST %</Text>
                                 <Text style={sformvalue}>{costform.gst > 0 ? costform.gst / 2 : 0}%</Text>
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>SGST</Text>
+                                <Text style={sformlabel}>SGST %</Text>
                                 <Text style={sformvalue}>{costform.gst > 0 ? costform.gst / 2 : 0}%</Text>
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformlabel}>IGST</Text>
+                                <Text style={sformlabel}>IGST %</Text>
                                 <Text style={sformvalue}>{costform.igst > 0 ? costform.igst : 0}%</Text>
                             </View>
 
 
 
                             <View style={sformhr}></View>
-
+                            <View style={sformcontainerin2}>
+                                <Text style={sformhead2}>GST (Rs.)</Text>
+                                <Text style={sformvalue}>Rs. {getgst ? getgst : 0}</Text>
+                            </View>
+                            <View style={sformcontainerin2}>
+                                <Text style={sformhead2}>IGST (Rs.)</Text>
+                                <Text style={sformvalue}>Rs. {getigst ? getigst : 0}</Text>
+                            </View>
                             {/*  */}
                             <View style={sformcontainerin2}>
-                                <Text style={sformhead2}>TOTAL</Text>
+                                <Text style={sformhead2}>TOTAL (Rs.)</Text>
                                 <Text style={sformvalue}>Rs. {getotal ? getotal : 0}</Text>
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformhead2}>DISCOUNT</Text>
+                                <Text style={sformhead2}>DISCOUNT (Rs.)</Text>
                                 <Text style={sformvalue}>Rs. {costform.discount}</Text>
                             </View>
 
                             <View style={sformcontainerin2}>
-                                <Text style={sformhead2}>FINAL AMOUNT</Text>
+                                <Text style={sformhead2}>FINAL AMOUNT (Rs.)</Text>
                                 <Text style={sformvalue}>Rs. {getfinaltotal ? getfinaltotal : 0
                                 }</Text>
                             </View>
@@ -652,6 +738,14 @@ const QuotationEdit = ({ navigation, route }) => {
                             }}
                         >
                             Update
+                        </Text>
+
+                        <Text style={formbtn}
+                            onPress={() => {
+                                converttoinvoice()
+                            }}
+                        >
+                            Convert to Invoice
                         </Text>
 
                         <Text style={formbtn}

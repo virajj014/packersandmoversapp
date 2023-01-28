@@ -1,11 +1,14 @@
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { colors } from '../../CommonStyles/Theme'
 import { formedit, sformcontainer, sformhead, sformhead2, sformcontainerin, sformcontainerin2, sformlabel, sformvalue, sformhr, formbtn, sforminput } from "../../CommonStyles/FormStyle"
-import  AntDesign  from 'react-native-vector-icons/AntDesign';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import envs from '../../env'
+import numberToWords from 'number-to-words';
+
+
 
 const Reciept = ({ navigation }) => {
   const [oldreciepts, setoldreciepts] = React.useState([])
@@ -41,28 +44,57 @@ const Reciept = ({ navigation }) => {
   const getoldreciepts = async () => {
     AsyncStorage.getItem('token')
       .then(token => {
-        fetch(`${envs.BACKEND_URL}/getalldocs`, {
+        fetch(envs.BACKEND_URL + '/getuserdatafromtoken', {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json',
-            "Authorization": "Bearer " + token
+            Authorization: `Bearer ${token}`
           }
-        }).then(res => res.json())
-          .then(data => {
-            // console.log(data.quotationdetails);
-            if (data.message == "All Documents Fetched Successfully") {
-              setoldreciepts(data.reciepts)
-              setbasicform(
-                {
-                  ...basicform,
-                  recieptnumber: `REC-${data.reciepts.length + 1}`
+        })
+          .then(res => res.json())
+          .then(userdata => {
+            if (userdata.error) {
+              navigation.navigate('Login');
+            }
+            else {
+              fetch(`${envs.BACKEND_URL}/getalldocs`, {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  "Authorization": "Bearer " + token
                 }
-              )
+              }).then(res => res.json())
+                .then(data => {
+                  // console.log(data.quotationdetails);
+                  if (data.message == "All Documents Fetched Successfully") {
+                    setoldreciepts(data.reciepts)
+                   
+
+                   {
+                      userdata?.userdata?.customreceiptnumber ?
+                        setbasicform(
+                          {
+                            ...basicform,
+                            recieptnumber: `${userdata?.userdata?.customreceiptnumber}-${data.reciepts.length + 1}`
+                          }
+                        )
+                        :  setbasicform(
+                          {
+                            ...basicform,
+                            recieptnumber: `REC-${data.reciepts.length + 1}`
+                          }
+                        )
+                   }
+                  }
+                })
+                .catch(err => {
+                  console.log("Error in getting old quotations ", err)
+                })
             }
           })
           .catch(err => {
-            console.log("Error in getting old quotations ", err)
+            navigation.navigate('Login')
           })
+       
 
       })
       .catch(err => {
@@ -84,7 +116,7 @@ const Reciept = ({ navigation }) => {
           body: JSON.stringify({
             doc: {
               basicform: basicform,
-              createdDate : new Date(),
+              createdDate: new Date(),
               docid: basicform.recieptnumber
             },
             doctype: 'reciepts'
@@ -112,6 +144,23 @@ const Reciept = ({ navigation }) => {
       })
 
   }
+
+  const [amountrecievedinwords, setamountrecievedinwords] = React.useState('')
+  const convertamounttowords = (amount) => {
+    var number = amount;
+    var words = numberToWords.toWords(number);
+    // console.log(words); // "twelve thousand five hundred"
+
+    // setbasicform({
+    //   ...basicform,
+    //   amountrecievedinwords: words
+    // })
+    setamountrecievedinwords(words)
+  }
+
+  useEffect(() => {
+    basicform.amountrecievedinnumbers > 0 && convertamounttowords(basicform.amountrecievedinnumbers)
+  }, [basicform])
   return (
     <View>
       {
@@ -127,7 +176,7 @@ const Reciept = ({ navigation }) => {
             <View style={sformcontainer}>
               <Text style={sformhead}>Basic Details</Text>
               <View style={sformcontainerin}>
-                <Text style={sformlabel}>Reciept Number</Text>
+                <Text style={sformlabel}>Reciept Number </Text>
                 <TextInput style={sforminput} value={basicform?.recieptnumber} onChangeText={(text) => setbasicform({ ...basicform, recieptnumber: text })} />
               </View>
 
@@ -142,15 +191,19 @@ const Reciept = ({ navigation }) => {
               </View>
 
               <View style={sformcontainerin}>
-                <Text style={sformlabel}>Amount Recieved in Words</Text>
-                <TextInput style={sforminput} value={basicform?.amountrecievedinwords} onChangeText={(text) => setbasicform({ ...basicform, amountrecievedinwords: text })} />
+
+                <Text style={sformlabel}>Amount Recieved in Numbers (Rs.)</Text>
+                <TextInput style={sforminput} value={basicform.amountrecievedinnumbers} onChangeText={(text) => setbasicform({ ...basicform, amountrecievedinnumbers: text })} />
               </View>
 
               <View style={sformcontainerin}>
-
-                <Text style={sformlabel}>Amount Recieved in Numbers</Text>
-                <TextInput style={sforminput} value={basicform?.amountrecievedinnumbers} onChangeText={(text) => setbasicform({ ...basicform, amountrecievedinnumbers: text })} />
+                <Text style={sformlabel}>Amount Recieved in Words (Rs.)</Text>
+                <TextInput style={sforminput} value={amountrecievedinwords} onChangeText={(text) => setamountrecievedinwords(text)}
+                  multiline
+                />
               </View>
+
+
 
               <View style={sformcontainerin}>
                 <Text style={sformlabel}>Payment Type</Text>
@@ -168,7 +221,7 @@ const Reciept = ({ navigation }) => {
             <View style={sformcontainer}>
               <Text style={sformhead}>Basic Details</Text>
               <View style={sformcontainerin}>
-                <Text style={sformlabel}>Reciept Number</Text>
+                <Text style={sformlabel}>Reciept Number </Text>
                 <Text style={sformvalue}>{basicform?.recieptnumber}</Text>
               </View>
 
@@ -183,13 +236,13 @@ const Reciept = ({ navigation }) => {
               </View>
 
               <View style={sformcontainerin}>
-                <Text style={sformlabel}>Amount Recieved in Words</Text>
-                <Text style={sformvalue}>{basicform?.amountrecievedinwords}</Text>
+                <Text style={sformlabel}>Amount Recieved in Words (Rs.)</Text>
+                <Text style={sformvalue}>{amountrecievedinwords}</Text>
               </View>
 
               <View style={sformcontainerin}>
 
-                <Text style={sformlabel}>Amount Recieved in Numbers</Text>
+                <Text style={sformlabel}>Amount Recieved in Numbers (Rs.)</Text>
                 <Text style={sformvalue}>Rs. {basicform?.amountrecievedinnumbers}</Text>
               </View>
 

@@ -1,31 +1,34 @@
-import { StyleSheet, Text, View, Image, TextInput } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { fullbg1, head1, padding10, text1, formcont1, label1, fontcont1in1, input1, colors, formcont2, link1, button1, link31, link32 } from '../../../CommonStyles/Theme'
 import logo from '../../../Media/Images/ThemeLogoFull.png'
-import  FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import envs from '../../../env'
 
 const ForgotPasswordOtp = ({ navigation, route }) => {
     const { otp, token, phonenumber } = route.params;
-    if(otp == undefined || phonenumber == undefined || token == undefined) {
+    const [loading, setLoading] = React.useState(false);
+    if (otp == undefined || phonenumber == undefined || token == undefined) {
         navigation.navigate('ForgotPasswordOtp');
     }
-    console.log(otp)
+    // console.log(otp)
 
     const [otpentered, setotpentered] = React.useState('');
     const verifyotp = () => {
+        setLoading(true);
         if (otpentered == otp || otpentered == '123456') {
-           
+            setLoading(false);
             alert('OTP verified successfully')
-            navigation.navigate('ForgotPasswordReset',{token:token})
+            navigation.navigate('ForgotPasswordReset', { token: token })
         }
         else {
-            alert('Invalid OTP') 
+            setLoading(false);
+            alert('Invalid OTP')
         }
     }
     return (
         <View style={fullbg1}>
-              <View style={styles.s1}>
+            <View style={styles.s1}>
                 <Image source={logo} style={styles.logo} />
             </View>
             <View style={styles.s2}>
@@ -39,9 +42,14 @@ const ForgotPasswordOtp = ({ navigation, route }) => {
                             onChangeText={text => setotpentered(text)}
                         />
                     </View>
-                    <Text style={button1}
-                        onPress={() => verifyotp()}
-                    >VERIFY OTP</Text>
+                    {
+                        loading ? 
+                         <ActivityIndicator size="large" color={colors.primary} />
+                        :
+                            <Text style={button1}
+                                onPress={() => verifyotp()}
+                            >VERIFY OTP</Text>
+                    }
                     <Text style={link31}>
                         Already have an account? <Text style={link32} onPress={() => navigation.navigate('Login')}
                         >Login</Text>

@@ -1,17 +1,31 @@
 import { Linking, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { colors } from '../../CommonStyles/Theme'
 import Feather from 'react-native-vector-icons/Feather';
 import { formedit, sformcontainer, sformhead, sformhead2, sformcontainerin, sformcontainerin2, sformlabel, sformvalue, sformhr, formbtn, sforminput } from "../../CommonStyles/FormStyle"
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import envs from '../../env'
+import numberToWords from 'number-to-words';
 
 const RecieptEdit = ({ navigation, route }) => {
   const { item } = route.params;
   const [oldreciepts, setoldreciepts] = React.useState([])
   const [editing, setediting] = React.useState(false)
 
+  const [amountrecievedinwords, setamountrecievedinwords] = React.useState('')
+  const convertamounttowords = (amount) => {
+    var number = amount;
+    var words = numberToWords.toWords(number);
+    setamountrecievedinwords(words)
+  }
+
+  useEffect(() => {
+    convertamounttowords(basicform.amountrecievedinnumbers)
+  }, [])
+
+
+  
   const [basicform, setbasicform] = React.useState({
     recieptnumber: item.basicform.recieptnumber,
     date: item.basicform.date,
@@ -21,19 +35,6 @@ const RecieptEdit = ({ navigation, route }) => {
     amountrecievedinnumbers: item.basicform.amountrecievedinnumbers,
     paymenttype: item.basicform.paymenttype,
   })
-
-  const resetvalues = () => {
-    setbasicform({
-      recieptnumber: item.basicform.recieptnumber,
-      date: item.basicform.date,
-
-      clientname: item.basicform.clientname,
-      amountrecievedinwords: item.basicform.amountrecievedinwords,
-      amountrecievedinnumbers: item.basicform.amountrecievedinnumbers,
-      paymenttype: item.basicform.paymenttype,
-    })
-    // getoldreciepts()
-  }
 
   const savedoc = async () => {
     AsyncStorage.getItem('token')
@@ -110,6 +111,13 @@ const RecieptEdit = ({ navigation, route }) => {
       })
 
   }
+
+
+  
+
+  useEffect(() => {
+    basicform.amountrecievedinnumbers > 0 && convertamounttowords(basicform.amountrecievedinnumbers)
+  }, [basicform])
   return (
     <View>
       {
@@ -139,16 +147,21 @@ const RecieptEdit = ({ navigation, route }) => {
                 <TextInput style={sforminput} value={basicform?.clientname} onChangeText={(text) => setbasicform({ ...basicform, clientname: text })} />
               </View>
 
-              <View style={sformcontainerin}>
-                <Text style={sformlabel}>Amount Recieved in Words</Text>
-                <TextInput style={sforminput} value={basicform?.amountrecievedinwords} onChangeText={(text) => setbasicform({ ...basicform, amountrecievedinwords: text })} />
-              </View>
+
 
               <View style={sformcontainerin}>
 
-                <Text style={sformlabel}>Amount Recieved in Numbers</Text>
+                <Text style={sformlabel}>Amount Recieved in Numbers (Rs.)</Text>
                 <TextInput style={sforminput} value={basicform?.amountrecievedinnumbers} onChangeText={(text) => setbasicform({ ...basicform, amountrecievedinnumbers: text })} />
               </View>
+
+              <View style={sformcontainerin}>
+                <Text style={sformlabel}>Amount Recieved in Words (Rs.)</Text>
+                <TextInput style={sforminput} value={amountrecievedinwords} onChangeText={(text) => setamountrecievedinwords(text)}
+                  multiline
+                />
+              </View>
+
 
               <View style={sformcontainerin}>
                 <Text style={sformlabel}>Payment Type</Text>
@@ -181,13 +194,13 @@ const RecieptEdit = ({ navigation, route }) => {
               </View>
 
               <View style={sformcontainerin}>
-                <Text style={sformlabel}>Amount Recieved in Words</Text>
-                <Text style={sformvalue}>{basicform?.amountrecievedinwords}</Text>
+                <Text style={sformlabel}>Amount Recieved in Words (Rs.)</Text>
+                <Text style={sformvalue}>{amountrecievedinwords}</Text>
               </View>
 
               <View style={sformcontainerin}>
 
-                <Text style={sformlabel}>Amount Recieved in Numbers</Text>
+                <Text style={sformlabel}>Amount Recieved in Numbers (Rs.)</Text>
                 <Text style={sformvalue}>Rs. {basicform?.amountrecievedinnumbers}</Text>
               </View>
 
