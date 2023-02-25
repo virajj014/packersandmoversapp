@@ -14,42 +14,61 @@ import pbcard from './icon/PB-card.png'
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import envs from '../../env'
 
-const DocumentCategories = ({ navigation }) => {
+const DocumentCategories = ({ navigation, subscription }) => {
 
   return (
     <View style={styles.Docs}>
       <Text style={styles.h1}>Document Categories</Text>
       <View style={styles.s1}>
-        <TouchableOpacity onPress={() => navigation.navigate('Quotation')} style={styles.s2}>
+        <TouchableOpacity onPress={() => subscription == true ?
+          navigation.navigate('Quotation')
+          :
+          alert("Please subscribe to use this feature")} style={styles.s2}>
           <View style={styles.s2in} >
             <Image source={quotation} style={styles.icon} />
             <Text style={styles.t1}>Quotation</Text>
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('PackingList')} style={styles.s2}>
+        <TouchableOpacity onPress={() => {
+          subscription == true ?
+            navigation.navigate('PackingList')
+            :
+            alert("Please subscribe to use this feature")
+        }
+        } style={styles.s2}>
           <View style={styles.s2in}>
             <Image source={packinglist} style={styles.icon} />
             <Text style={styles.t1}>Packing List</Text>
           </View>
         </TouchableOpacity>
-
+        {/* 
         <TouchableOpacity onPress={() => navigation.navigate('VehicleCondition')} style={styles.s2}>
           <View style={styles.s2in}>
             <Image source={carcondition
             } style={styles.icon} />
             <Text style={styles.t1}>Vehicle</Text>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
-        <TouchableOpacity onPress={() => navigation.navigate('Bill', {converteditem: {}})} style={styles.s2}>
+        <TouchableOpacity onPress={() => {
+          subscription == true ?
+            navigation.navigate('Bill', { converteditem: {} })
+            :
+            alert("Please subscribe to use this feature")
+        }} style={styles.s2}>
           <View style={styles.s2in}>
             <Image source={bill} style={styles.icon} />
             <Text style={styles.t1}>Bill</Text>
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('LrBilty')} style={styles.s2}>
+        <TouchableOpacity onPress={() => {
+          subscription == true ?
+            navigation.navigate('LrBilty', { converteditem: {} })
+            :
+            alert("Please subscribe to use this feature")
+        }} style={styles.s2}>
           <View style={styles.s2in}>
             <Image source={lrbilty} style={styles.icon} />
             <Text style={styles.t1}>LR Bilty</Text>
@@ -63,7 +82,12 @@ const DocumentCategories = ({ navigation }) => {
           </View>
         </TouchableOpacity> */}
 
-        <TouchableOpacity onPress={() => navigation.navigate('Reciept')} style={styles.s2}>
+        <TouchableOpacity onPress={() => {
+          subscription == true ?
+            navigation.navigate('Reciept')
+            :
+            alert("Please subscribe to use this feature")
+        }} style={styles.s2}>
           <View style={styles.s2in}>
             <Image source={reciept} style={styles.icon} />
             <Text style={styles.t1}>Reciept</Text>
@@ -74,19 +98,21 @@ const DocumentCategories = ({ navigation }) => {
 
 
       <View style={styles.s4}>
-        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'Quotation' })}>
+        <TouchableOpacity style={styles.s3} onPress={() => navigation.navigate('SavedDocs', { doctype: 'Quotation' })}>
           <View style={styles.s3in}>
             <Image source={quotation} style={styles.icon1} />
             <Text style={styles.t3}>Quotation</Text>
           </View>
 
           <AntDesign name="caretright" size={20} color={colors.primary}
-            onPress={() => navigation.navigate('SavedDocs', { doctype: 'Quotation' })}
+            onPress={() => {
+              navigation.navigate('SavedDocs', { doctype: 'Quotation' })
+            }}
           />
 
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'PackingList' })}>
+        <TouchableOpacity style={styles.s3} onPress={() => navigation.navigate('SavedDocs', { doctype: 'PackingList' })}>
           <View style={styles.s3in}>
             <Image source={packinglist} style={styles.icon1} />
             <Text style={styles.t3}>Packing List</Text>
@@ -96,7 +122,7 @@ const DocumentCategories = ({ navigation }) => {
           })} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'CarCondition' })}>
+        {/* <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'CarCondition' })}>
           <View style={styles.s3in}>
             <Image source={carcondition} style={styles.icon1} />
             <Text style={styles.t3}>Car Condition</Text>
@@ -105,9 +131,9 @@ const DocumentCategories = ({ navigation }) => {
             doctype: 'CarCondition'
           })} />
 
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
-        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'Invoice' })}>
+        <TouchableOpacity style={styles.s3} onPress={() => navigation.navigate('SavedDocs', { doctype: 'Invoice' })}>
           <View style={styles.s3in}>
             <Image source={bill} style={styles.icon1} />
             <Text style={styles.t3}>Bill</Text>
@@ -131,7 +157,7 @@ const DocumentCategories = ({ navigation }) => {
           })} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.s3}   onPress={() => navigation.navigate('SavedDocs', { doctype: 'Reciept' })}>
+        <TouchableOpacity style={styles.s3} onPress={() => navigation.navigate('SavedDocs', { doctype: 'Reciept' })}>
           <View style={styles.s3in}>
             <Image source={reciept} style={styles.icon1} />
             <Text style={styles.t3}>Reciept</Text>

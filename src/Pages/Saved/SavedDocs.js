@@ -109,7 +109,9 @@ const SavedDocs = ({ navigation, route }) => {
                                         <Text style={styles.dochead}>Quotations</Text>
                                         <View style={styles.docitems}>
                                             {
-                                                docs?.quotationdetails?.map((item, index) => {
+                                                docs?.quotationdetails?.sort(
+                                                    (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+                                                ).map((item, index) => {
                                                     return (
                                                         <Card1 navigation={navigation} item={item} index={index} key={index}
                                                             doctype={"Quotation"}
@@ -125,7 +127,9 @@ const SavedDocs = ({ navigation, route }) => {
                                     <View style={styles.docInType}>
                                         <Text style={styles.dochead}>PackingList</Text>
                                         {
-                                            docs?.packinglists?.map((item, index) => {
+                                            docs?.packinglists?.sort(
+                                                (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+                                            ).map((item, index) => {
                                                 return (
                                                     <Card1 navigation={navigation} item={item} index={index} key={index}
                                                         doctype={"PackingList"}
@@ -155,7 +159,9 @@ const SavedDocs = ({ navigation, route }) => {
                                     <View style={styles.docInType}>
                                         <Text style={styles.dochead}>CarCondition</Text>
                                         {
-                                            docs?.vehiclesdetails?.map((item, index) => {
+                                            docs?.vehiclesdetails?.sort(
+                                                (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+                                            ).map((item, index) => {
                                                 return (
                                                     <Card1 navigation={navigation} item={item} index={index} key={index}
                                                         doctype={"CarCondition"}
@@ -170,7 +176,9 @@ const SavedDocs = ({ navigation, route }) => {
                                     <View style={styles.docInType}>
                                         <Text style={styles.dochead}>LrBilty</Text>
                                         {
-                                            docs?.lrbilties?.map((item, index) => {
+                                            docs?.lrbilties?.sort(
+                                                (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+                                            ).map((item, index) => {
                                                 return (
                                                     <Card1 navigation={navigation} item={item} index={index} key={index}
                                                         doctype={"LrBilty"}
@@ -185,7 +193,9 @@ const SavedDocs = ({ navigation, route }) => {
                                     <View style={styles.docInType}>
                                         <Text style={styles.dochead}>Reciepts</Text>
                                         {
-                                            docs?.reciepts?.map((item, index) => {
+                                            docs?.reciepts?.sort(
+                                                (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+                                            ).map((item, index) => {
                                                 return (
                                                     <Card1 navigation={navigation} item={item} index={index} key={index}
                                                         doctype={"Reciept"}
@@ -229,7 +239,9 @@ const SavedDocs = ({ navigation, route }) => {
                                         <Text style={styles.dochead}>Quotations</Text>
                                         <View style={styles.docitems}>
                                             {
-                                                docs?.quotationdetails?.map((item, index) => {
+                                                docs?.quotationdetails?.sort(
+                                                    (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+                                                ).map((item, index) => {
                                                     return (
                                                         <Card1 navigation={navigation} item={item} index={index} key={index}
                                                             doctype={"Quotation"}
@@ -258,7 +270,9 @@ const SavedDocs = ({ navigation, route }) => {
                                     <View style={styles.docInType}>
                                         <Text style={styles.dochead}>Bills</Text>
                                         {
-                                            docs?.invoices?.map((item, index) => {
+                                            docs?.invoices?.sort(
+                                                (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+                                            ).map((item, index) => {
                                                 return (
                                                     <Card1 navigation={navigation} item={item} index={index} key={index}
                                                         doctype={"Invoice"}
@@ -293,7 +307,9 @@ const SavedDocs = ({ navigation, route }) => {
                                     <View style={styles.docInType}>
                                         <Text style={styles.dochead}>PackingList</Text>
                                         {
-                                            docs?.packinglists?.map((item, index) => {
+                                            docs?.packinglists?.sort(
+                                                (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+                                            ).map((item, index) => {
                                                 return (
                                                     <Card1 navigation={navigation} item={item} index={index} key={index}
                                                         doctype={"PackingList"}
@@ -330,7 +346,9 @@ const SavedDocs = ({ navigation, route }) => {
                                     <View style={styles.docInType}>
                                         <Text style={styles.dochead}>CarCondition</Text>
                                         {
-                                            docs?.vehiclesdetails?.map((item, index) => {
+                                            docs?.vehiclesdetails?.sort(
+                                                (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+                                            ).map((item, index) => {
                                                 return (
                                                     <Card1 navigation={navigation} item={item} index={index} key={index}
                                                         doctype={"CarCondition"}
@@ -366,7 +384,9 @@ const SavedDocs = ({ navigation, route }) => {
                                     <View style={styles.docInType}>
                                         <Text style={styles.dochead}>LrBilty</Text>
                                         {
-                                            docs?.lrbilties?.map((item, index) => {
+                                            docs?.lrbilties?.sort(
+                                                (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+                                            ).map((item, index) => {
                                                 return (
                                                     <Card1 navigation={navigation} item={item} index={index} key={index}
                                                         doctype={"LrBilty"}
@@ -402,7 +422,9 @@ const SavedDocs = ({ navigation, route }) => {
                                     <View style={styles.docInType}>
                                         <Text style={styles.dochead}>Reciept</Text>
                                         {
-                                            docs?.reciepts?.map((item, index) => {
+                                            docs?.reciepts?.sort(
+                                                (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+                                            ).map((item, index) => {
                                                 return (
                                                     <Card1 navigation={navigation} item={item} index={index} key={index}
                                                         doctype={"Reciept"}

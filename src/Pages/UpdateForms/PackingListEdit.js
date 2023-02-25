@@ -180,6 +180,7 @@ const PackingListEdit = ({ navigation, route }) => {
                 <Text style={sformlabel}>Mobile Number</Text>
                 <TextInput style={sforminput} value={basicform?.mobilenumber} onChangeText={(text) => setbasicform({ ...basicform, mobilenumber: text })}
                   maxLength={10}
+                  keyboardType='numeric'
                 />
               </View>
 
@@ -223,7 +224,7 @@ const PackingListEdit = ({ navigation, route }) => {
 
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Quantity</Text>
-                <TextInput style={sforminput} placeholder="Quantity"
+                <TextInput style={sforminput} placeholder="Quantity" keyboardType='numeric'
                   value={newitem.quantity} onChangeText={(text) => setnewitem({ ...newitem, quantity: text })}
                 />
               </View>

@@ -152,7 +152,7 @@ const RecieptEdit = ({ navigation, route }) => {
               <View style={sformcontainerin}>
 
                 <Text style={sformlabel}>Amount Recieved in Numbers (Rs.)</Text>
-                <TextInput style={sforminput} value={basicform?.amountrecievedinnumbers} onChangeText={(text) => setbasicform({ ...basicform, amountrecievedinnumbers: text })} />
+                <TextInput style={sforminput} keyboardType='numeric' value={basicform?.amountrecievedinnumbers} onChangeText={(text) => setbasicform({ ...basicform, amountrecievedinnumbers: text })} />
               </View>
 
               <View style={sformcontainerin}>

@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Linking, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import React from 'react'
 import { colors } from '../../CommonStyles/Theme'
 import Feather from 'react-native-vector-icons/Feather';
@@ -147,6 +147,7 @@ const PackingList = ({ navigation }) => {
           .then(data => {
             console.log(data)
             if (data.message == "Packing List Saved Successfully") {
+              showprintablerbill(basicform)
               alert("Packing List Saved Successfully")
               resetvalues()
             }
@@ -157,6 +158,39 @@ const PackingList = ({ navigation }) => {
           .catch(err => {
             alert("Packing List Not Saved ")
             console.log("Error in saving packing list ", err)
+          })
+      })
+      .catch(err => {
+        navigation.navigate('Login')
+      })
+
+  }
+
+
+  const showprintablerbill = async (basicform) => {
+    let userid = 0;
+    let docid = basicform.plnumber;
+    let doctype = 'packinglist'
+    AsyncStorage.getItem('token')
+      .then(token => {
+        fetch(`${envs.BACKEND_URL}/getuserdatafromtoken`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          }
+        })
+          .then(res => res.json())
+          .then(data => {
+            // console.log(data)
+            userid = data.userdata._id
+
+            // console.log(userid + '/' + doctype + '/' + docid)
+            Linking.openURL(`https://packersandmoversweb.vercel.app/bill/${userid}/${doctype}/${docid}`)
+            // navigation.navigate('PrintDoc', { userid: userid, doctype: doctype, docid: docid })
+          })
+          .catch(err => {
+            console.log(err)
           })
       })
       .catch(err => {
@@ -200,7 +234,7 @@ const PackingList = ({ navigation }) => {
 
                 <Text style={sformlabel}>Mobile Number</Text>
                 <TextInput style={sforminput} value={basicform?.mobilenumber} onChangeText={(text) => setbasicform({ ...basicform, mobilenumber: text })}
-                  maxLength={10}
+                  maxLength={10}  keyboardType={'number-pad'}
                 />
               </View>
 
@@ -238,7 +272,7 @@ const PackingList = ({ navigation }) => {
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Item Name</Text>
                 <TextInput style={sforminput} placeholder="Item Name"
-                  value={newitem.name} onChangeText={(text) => setnewitem({ ...newitem, name: text })}
+                  value={newitem.name} onChangeText={(text) => setnewitem({ ...newitem, name: text })}  keyboardType={'number-pad'}
                 />
               </View>
 

@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Linking, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import React from 'react'
 import { colors } from '../../CommonStyles/Theme'
 import Feather from 'react-native-vector-icons/Feather';
@@ -190,9 +190,11 @@ const Bill = ({ navigation, route }) => {
           .then(data => {
             console.log(data)
             if (data.message == "Invoice Saved Successfully") {
-              resetvalues()
+              // resetvalues()
+              showprintablerbill(basicform)
               setediting(false)
               alert("Invoice Saved Successfully")
+              resetvalues()
             }
             else {
               alert("Error in saving Invoice")
@@ -253,6 +255,41 @@ const Bill = ({ navigation, route }) => {
     { label: 'Lift Not Available', value: 0 },
     { label: 'Lift Available', value: 1 }
   ];
+
+
+
+
+  const showprintablerbill = async (basicform) => {
+    let userid = 0;
+    let docid = basicform.invoiceumber;
+    let doctype = 'invoice'
+    AsyncStorage.getItem('token')
+      .then(token => {
+        fetch(`${envs.BACKEND_URL}/getuserdatafromtoken`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          }
+        })
+          .then(res => res.json())
+          .then(data => {
+            // console.log(data)
+            userid = data.userdata._id
+
+            // console.log(userid + '/' + doctype + '/' + docid)
+            Linking.openURL(`https://packersandmoversweb.vercel.app/bill/${userid}/${doctype}/${docid}`)
+            // navigation.navigate('PrintDoc', { userid: userid, doctype: doctype, docid: docid })
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      })
+      .catch(err => {
+        navigation.navigate('Login')
+      })
+
+  }
   return (
     <View>
       {
@@ -284,6 +321,7 @@ const Bill = ({ navigation, route }) => {
                 <Text style={sformlabel}>Mobile Number</Text>
                 <TextInput style={sforminput} value={basicform?.mobile} onChangeText={(text) => setbasicform({ ...basicform, mobile: text })}
                   maxLength={10}
+                  keyboardType={'number-pad'}
                 />
               </View>
 
@@ -349,12 +387,14 @@ const Bill = ({ navigation, route }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Packing Charges (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.packingcharge} onChangeText={(text) => setcostform({ ...costform, packingcharge: text })} />
+                <TextInput style={sforminput} value={costform?.packingcharge} onChangeText={(text) => setcostform({ ...costform, packingcharge: text })}
+                  keyboardType={'number-pad'}
+                />
               </View>
 
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Unpacking Charges (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.unpackingcharge} onChangeText={(text) => setcostform({ ...costform, unpackingcharge: text })} />
+                <TextInput style={sforminput} value={costform?.unpackingcharge} onChangeText={(text) => setcostform({ ...costform, unpackingcharge: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformhr}></View>
 
@@ -365,37 +405,37 @@ const Bill = ({ navigation, route }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Loading Charges (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.loadingcharge} onChangeText={(text) => setcostform({ ...costform, loadingcharge: text })} />
+                <TextInput style={sforminput} value={costform?.loadingcharge} onChangeText={(text) => setcostform({ ...costform, loadingcharge: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Unloading Charges (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.unloadingcharge} onChangeText={(text) => setcostform({ ...costform, unloadingcharge: text })} />
+                <TextInput style={sforminput} value={costform?.unloadingcharge} onChangeText={(text) => setcostform({ ...costform, unloadingcharge: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformcontainerin2}>
                 <Text style={sformhead2}>FRIGHT</Text>
               </View>
               <View style={sformcontainerin2}>
-                <Text style={sformlabel}>Truck Size</Text>
-                <TextInput style={sforminput} value={costform?.trucksize} onChangeText={(text) => setcostform({ ...costform, trucksize: text })} />
+                <Text style={sformlabel}>Truck Size (Ft.)</Text>
+                <TextInput style={sforminput} value={costform?.trucksize} onChangeText={(text) => setcostform({ ...costform, trucksize: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Pro Fright Charges (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.profright} onChangeText={(text) => setcostform({ ...costform, profright: text })} />
+                <TextInput style={sforminput} value={costform?.profright} onChangeText={(text) => setcostform({ ...costform, profright: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Car Transportation (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.cartransportation} onChangeText={(text) => setcostform({ ...costform, cartransportation: text })} />
+                <TextInput style={sforminput} value={costform?.cartransportation} onChangeText={(text) => setcostform({ ...costform, cartransportation: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Handyman Charges (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.handymancharges} onChangeText={(text) => setcostform({ ...costform, handymancharges: text })} />
+                <TextInput style={sforminput} value={costform?.handymancharges} onChangeText={(text) => setcostform({ ...costform, handymancharges: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Escort Charges (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.escortcharges} onChangeText={(text) => setcostform({ ...costform, escortcharges: text })} />
+                <TextInput style={sforminput} value={costform?.escortcharges} onChangeText={(text) => setcostform({ ...costform, escortcharges: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformhr}></View>
 
@@ -406,7 +446,7 @@ const Bill = ({ navigation, route }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Insurance Charges (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.insurancecharges} onChangeText={(text) => setcostform({ ...costform, insurancecharges: text })} />
+                <TextInput style={sforminput} value={costform?.insurancecharges} onChangeText={(text) => setcostform({ ...costform, insurancecharges: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformcontainerin2}>
@@ -426,7 +466,7 @@ const Bill = ({ navigation, route }) => {
 
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Any Other Charges (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.anyothercharges} onChangeText={(text) => setcostform({ ...costform, anyothercharges: text })} />
+                <TextInput style={sforminput} value={costform?.anyothercharges} onChangeText={(text) => setcostform({ ...costform, anyothercharges: text })}  keyboardType={'number-pad'}/>
               </View>
 
 
@@ -460,7 +500,7 @@ const Bill = ({ navigation, route }) => {
 
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>GST %</Text>
-                <TextInput style={sforminput} value={costform?.gst} onChangeText={(text) => setcostform({ ...costform, gst: text })} />
+                <TextInput style={sforminput} value={costform?.gst} onChangeText={(text) => setcostform({ ...costform, gst: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformcontainerin2}>
@@ -477,7 +517,7 @@ const Bill = ({ navigation, route }) => {
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>IGST %</Text>
                 <TextInput style={sforminput} value={costform?.igst}
-                  onChangeText={(text) => setcostform({ ...costform, igst: text })}
+                  onChangeText={(text) => setcostform({ ...costform, igst: text })}  keyboardType={'number-pad'}
                 />
               </View>
 
@@ -498,7 +538,7 @@ const Bill = ({ navigation, route }) => {
 
               <View style={sformcontainerin2}>
                 <Text style={sformhead2}>DISCOUNT (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.discount} onChangeText={(text) => setcostform({ ...costform, discount: text })} />
+                <TextInput style={sforminput} value={costform?.discount} onChangeText={(text) => setcostform({ ...costform, discount: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformcontainerin2}>
@@ -509,7 +549,7 @@ const Bill = ({ navigation, route }) => {
 
               <View style={sformcontainerin2}>
                 <Text style={sformhead2}>ADVANCE PAYMENT (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.advancepayment} onChangeText={(text) => setcostform({ ...costform, advancepayment: text })} />
+                <TextInput style={sforminput} value={costform?.advancepayment} onChangeText={(text) => setcostform({ ...costform, advancepayment: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformcontainerin2}>

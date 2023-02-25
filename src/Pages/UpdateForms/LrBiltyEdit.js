@@ -317,11 +317,11 @@ const LrBiltyEdit = ({ navigation, route }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Actual (kg.)</Text>
-                <TextInput style={sforminput} value={descriptionform?.householditemswtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, householditemswtactual: text })} />
+                <TextInput style={sforminput} value={descriptionform?.householditemswtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, householditemswtactual: text })} keyboardType='numeric'/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Charge (Rs.)</Text>
-                <TextInput style={sforminput} value={descriptionform?.householditemswtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, householditemswtcharged: text })} />
+                <TextInput style={sforminput} value={descriptionform?.householditemswtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, householditemswtcharged: text })} keyboardType='numeric'/>
               </View>
 
               <View style={sformhr} />
@@ -332,11 +332,11 @@ const LrBiltyEdit = ({ navigation, route }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Actual (kg.)</Text>
-                <TextInput style={sforminput} value={descriptionform?.officeitemswtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, officeitemswtactual: text })} />
+                <TextInput style={sforminput} value={descriptionform?.officeitemswtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, officeitemswtactual: text })} keyboardType='numeric'/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Charge (Rs.)</Text>
-                <TextInput style={sforminput} value={descriptionform?.officeitemswtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, officeitemswtcharged: text })} />
+                <TextInput style={sforminput} value={descriptionform?.officeitemswtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, officeitemswtcharged: text })} keyboardType='numeric'/>
               </View>
 
               <View style={sformhr} />
@@ -347,11 +347,11 @@ const LrBiltyEdit = ({ navigation, route }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Actual (kg.)</Text>
-                <TextInput style={sforminput} value={descriptionform?.industrialitemswtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, industrialitemswtactual: text })} />
+                <TextInput style={sforminput} value={descriptionform?.industrialitemswtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, industrialitemswtactual: text })} keyboardType='numeric'/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Charge (Rs.)</Text>
-                <TextInput style={sforminput} value={descriptionform?.industrialitemswtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, industrialitemswtcharged: text })} />
+                <TextInput style={sforminput} value={descriptionform?.industrialitemswtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, industrialitemswtcharged: text })} keyboardType='numeric'/>
               </View>
 
               <View style={sformhr} />
@@ -362,11 +362,11 @@ const LrBiltyEdit = ({ navigation, route }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Actual (kg.)</Text>
-                <TextInput style={sforminput} value={descriptionform?.cartransportationwtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, cartransportationwtactual: text })} />
+                <TextInput style={sforminput} value={descriptionform?.cartransportationwtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, cartransportationwtactual: text })} keyboardType='numeric'/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Charge (Rs.)</Text>
-                <TextInput style={sforminput} value={descriptionform?.cartransportationwtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, cartransportationwtcharged: text })} />
+                <TextInput style={sforminput} value={descriptionform?.cartransportationwtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, cartransportationwtcharged: text })} keyboardType='numeric'/>
               </View>
 
 
@@ -378,11 +378,11 @@ const LrBiltyEdit = ({ navigation, route }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Actual (kg.)</Text>
-                <TextInput style={sforminput} value={descriptionform?.biketransportationwtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, biketransportationwtactual: text })} />
+                <TextInput style={sforminput} value={descriptionform?.biketransportationwtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, biketransportationwtactual: text })} keyboardType='numeric'/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Charge (Rs.)</Text>
-                <TextInput style={sforminput} value={descriptionform?.biketransportationwtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, biketransportationwtcharged: text })} />
+                <TextInput style={sforminput} value={descriptionform?.biketransportationwtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, biketransportationwtcharged: text })} keyboardType='numeric'/>
               </View>
 
               <View style={sformhr} />
@@ -393,11 +393,11 @@ const LrBiltyEdit = ({ navigation, route }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Actual (kg.)</Text>
-                <TextInput style={sforminput} value={descriptionform?.asperlistattachedwtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, asperlistattachedwtactual: text })} />
+                <TextInput style={sforminput} value={descriptionform?.asperlistattachedwtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, asperlistattachedwtactual: text })} keyboardType='numeric'/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Charge (Rs.)</Text>
-                <TextInput style={sforminput} value={descriptionform?.asperlistattachedwtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, asperlistattachedwtcharged: text })} />
+                <TextInput style={sforminput} value={descriptionform?.asperlistattachedwtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, asperlistattachedwtcharged: text })} keyboardType='numeric'/>
               </View>
 
             </View>
@@ -413,11 +413,11 @@ const LrBiltyEdit = ({ navigation, route }) => {
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Freight Charges Rate (Rs.)</Text>
 
-                <TextInput style={sforminput} value={costform?.freightchargesrate} onChangeText={(text) => setcostform({ ...costform, freightchargesrate: text })} />
+                <TextInput style={sforminput} value={costform?.freightchargesrate} onChangeText={(text) => setcostform({ ...costform, freightchargesrate: text })} keyboardType='numeric'/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Freight Charges Paid (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.freightchargespaid} onChangeText={(text) => setcostform({ ...costform, freightchargespaid: text })} />
+                <TextInput style={sforminput} value={costform?.freightchargespaid} onChangeText={(text) => setcostform({ ...costform, freightchargespaid: text })} keyboardType='numeric'/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Freight Charges Due (Rs.)</Text>
@@ -431,11 +431,11 @@ const LrBiltyEdit = ({ navigation, route }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Loading Charges Rate (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.loadingchargerate} onChangeText={(text) => setcostform({ ...costform, loadingchargerate: text })} />
+                <TextInput style={sforminput} value={costform?.loadingchargerate} onChangeText={(text) => setcostform({ ...costform, loadingchargerate: text })} keyboardType='numeric'/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Loading Charges Paid (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.loadingchargepaid} onChangeText={(text) => setcostform({ ...costform, loadingchargepaid: text })} />
+                <TextInput style={sforminput} value={costform?.loadingchargepaid} onChangeText={(text) => setcostform({ ...costform, loadingchargepaid: text })} keyboardType='numeric'/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Loading Charges Due (Rs.)</Text>
@@ -449,11 +449,11 @@ const LrBiltyEdit = ({ navigation, route }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Unloading Charges Rate (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.unloadingchargerate} onChangeText={(text) => setcostform({ ...costform, unloadingchargerate: text })} />
+                <TextInput style={sforminput} value={costform?.unloadingchargerate} onChangeText={(text) => setcostform({ ...costform, unloadingchargerate: text })} keyboardType='numeric'/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Unloading Charges Paid (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.unloadingchargepaid} onChangeText={(text) => setcostform({ ...costform, unloadingchargepaid: text })} />
+                <TextInput style={sforminput} value={costform?.unloadingchargepaid} onChangeText={(text) => setcostform({ ...costform, unloadingchargepaid: text })} keyboardType='numeric'/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Unloading Charges Due (Rs.)</Text>
@@ -467,11 +467,11 @@ const LrBiltyEdit = ({ navigation, route }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>G.R. Charge Rate (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.grchargerate} onChangeText={(text) => setcostform({ ...costform, grchargerate: text })} />
+                <TextInput style={sforminput} value={costform?.grchargerate} onChangeText={(text) => setcostform({ ...costform, grchargerate: text })} keyboardType='numeric'/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>G.R. Charge Paid (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.grchargepaid} onChangeText={(text) => setcostform({ ...costform, grchargepaid: text })} />
+                <TextInput style={sforminput} value={costform?.grchargepaid} onChangeText={(text) => setcostform({ ...costform, grchargepaid: text })} keyboardType='numeric'/>
               </View>
 
               <View style={sformcontainerin2}>
@@ -487,12 +487,12 @@ const LrBiltyEdit = ({ navigation, route }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Insurance Charges Rate (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.insurancechargesrate} onChangeText={(text) => setcostform({ ...costform, insurancechargesrate: text })} />
+                <TextInput style={sforminput} value={costform?.insurancechargesrate} onChangeText={(text) => setcostform({ ...costform, insurancechargesrate: text })} keyboardType='numeric'/>
               </View>
 
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Insurance Charges Paid (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.insurancechargespaid} onChangeText={(text) => setcostform({ ...costform, insurancechargespaid: text })} />
+                <TextInput style={sforminput} value={costform?.insurancechargespaid} onChangeText={(text) => setcostform({ ...costform, insurancechargespaid: text })} keyboardType='numeric'/>
               </View>
 
               <View style={sformcontainerin2}>
@@ -506,11 +506,11 @@ const LrBiltyEdit = ({ navigation, route }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Discount (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.discount} onChangeText={(text) => setcostform({ ...costform, discount: text })} />
+                <TextInput style={sforminput} value={costform?.discount} onChangeText={(text) => setcostform({ ...costform, discount: text })} keyboardType='numeric'/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>GST %</Text>
-                <TextInput style={sforminput} value={costform?.gst} onChangeText={(text) => setcostform({ ...costform, gst: text })} />
+                <TextInput style={sforminput} value={costform?.gst} onChangeText={(text) => setcostform({ ...costform, gst: text })} keyboardType='numeric'/>
               </View>
 
               <View style={sformcontainerin2}>
@@ -528,7 +528,7 @@ const LrBiltyEdit = ({ navigation, route }) => {
                 <Text style={sformlabel}>IGST %</Text>
                 <TextInput style={sforminput} value={costform?.igst}
                   onChangeText={(text) => setcostform({ ...costform, igst: text })}
-                />
+                  keyboardType='numeric'/>
               </View>
 
               <View style={sformhr} />

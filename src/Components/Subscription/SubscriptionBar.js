@@ -14,7 +14,7 @@ const SubscriptionBar = ({ navigation, data }) => {
         month: '',
         year: ''
     })
-    const [planexpired, setplanexpired] = React.useState(false)
+    const [planexpired, setplanexpired] = React.useState(true)
     const [whatsappmessage, setwhatsappmessage] = React.useState('')
 
     const getuserdata = () => {
@@ -66,8 +66,8 @@ const SubscriptionBar = ({ navigation, data }) => {
                 month: new Date().getMonth(),
                 day: new Date().getDate()
             }
-            console.log(temp);
-            console.log(currentdate);
+            // console.log(temp);
+            // console.log(currentdate);
 
             if (!checkcurrentdatelessthanenddate(currentdate, temp)) {
                 alert('Your Plan is expired')

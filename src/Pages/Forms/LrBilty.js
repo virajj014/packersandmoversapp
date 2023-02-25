@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Linking, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import React from 'react'
 import { colors } from '../../CommonStyles/Theme'
 import Feather from 'react-native-vector-icons/Feather';
@@ -6,18 +6,18 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { formedit, sformcontainer, sformhead, sformhead2, sformcontainerin, sformcontainerin2, sformlabel, sformvalue, sformhr, formbtn, sforminput } from "../../CommonStyles/FormStyle"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import envs from '../../env'
-const LrBilty = ({ navigation }) => {
+const LrBilty = ({ navigation, route }) => {
+  const { converteditem } = route.params;
+  // console.log(converteditem)
   const [oldlr, setoldlr] = React.useState([])
   const [editing, setediting] = React.useState(false)
   const [basicform, setbasicform] = React.useState({
     biltynumber: '',
     date: `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`,
-
-    consignorname: '',
-    addressfrom: '',
-    addressto: '',
+    consignorname: converteditem?.basicform?.clientname ? converteditem?.basicform?.clientname : converteditem?.basicform?.clientname ? converteditem?.basicform?.clientname : '',    
+    addressfrom: converteditem?.basicform?.from ? converteditem?.basicform?.from : '',
+    addressto: converteditem?.basicform?.to ? converteditem?.basicform?.to : '',
     lorrynumber: '',
-
   })
 
   const [costform, setcostform] = React.useState({
@@ -39,11 +39,10 @@ const LrBilty = ({ navigation }) => {
     insurancechargesrate: '',
     insurancechargespaid: '',
     discount: '',
-    gst: '',
-
-    cgst: '',
-    sgst: '',
-    igst: '',
+    gst: converteditem?.costform?.gst ? converteditem?.costform?.gst : '',
+    cgst: converteditem?.costform?.cgst ? converteditem?.costform?.cgst : '',
+    sgst: converteditem?.costform?.sgst ? converteditem?.costform?.sgst : '',
+    igst: converteditem?.costform?.igst ? converteditem?.costform?.igst : '',
     totalamount: '',
     totalamountpaid: '',
   })
@@ -217,7 +216,7 @@ const LrBilty = ({ navigation }) => {
             if (data.message == "LR Bilty Saved Successfully") {
               alert("LR Bilty Saved Successfully")
               setediting(false)
-              resetvalues()
+               showprintablerbill(basicform)
             }
             else {
               alert("LR Bilty Not Saved")
@@ -233,7 +232,39 @@ const LrBilty = ({ navigation }) => {
       })
 
   }
+  // https://packersandmoversweb.vercel.app/bill/63aa05847bab0845931b3780/lrbilty/HJIN-4
 
+  const showprintablerbill = async (basicform) => {
+    let userid = 0;
+    let docid = basicform.biltynumber;
+    let doctype = 'lrbilty'
+    AsyncStorage.getItem('token')
+      .then(token => {
+        fetch(`${envs.BACKEND_URL}/getuserdatafromtoken`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          }
+        })
+          .then(res => res.json())
+          .then(data => {
+            // console.log(data)
+            userid = data.userdata._id
+
+            // console.log(userid + '/' + doctype + '/' + docid)
+            Linking.openURL(`https://packersandmoversweb.vercel.app/bill/${userid}/${doctype}/${docid}`)
+            // navigation.navigate('PrintDoc', { userid: userid, doctype: doctype, docid: docid })
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      })
+      .catch(err => {
+        navigation.navigate('Login')
+      })
+
+  }
 
   const [getotal, setgetotal] = React.useState(0);
   const [gettotalpaid, settotalpaid] = React.useState(0);
@@ -321,7 +352,7 @@ const LrBilty = ({ navigation }) => {
               <View style={sformcontainerin}>
                 <Text style={sformlabel}>Lorry Number</Text>
 
-                <TextInput style={sforminput}>{basicform?.lorrynumber}</TextInput>
+                <TextInput style={sforminput} >{basicform?.lorrynumber}</TextInput>
               </View>
             </View>
 
@@ -337,11 +368,11 @@ const LrBilty = ({ navigation }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Actual (kg)</Text>
-                <TextInput style={sforminput} value={descriptionform?.householditemswtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, householditemswtactual: text })} />
+                <TextInput style={sforminput} value={descriptionform?.householditemswtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, householditemswtactual: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Charge (Rs)</Text>
-                <TextInput style={sforminput} value={descriptionform?.householditemswtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, householditemswtcharged: text })} />
+                <TextInput style={sforminput} value={descriptionform?.householditemswtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, householditemswtcharged: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformhr} />
@@ -352,11 +383,11 @@ const LrBilty = ({ navigation }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Actual (kg)</Text>
-                <TextInput style={sforminput} value={descriptionform?.officeitemswtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, officeitemswtactual: text })} />
+                <TextInput style={sforminput} value={descriptionform?.officeitemswtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, officeitemswtactual: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Charge (Rs)</Text>
-                <TextInput style={sforminput} value={descriptionform?.officeitemswtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, officeitemswtcharged: text })} />
+                <TextInput style={sforminput} value={descriptionform?.officeitemswtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, officeitemswtcharged: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformhr} />
@@ -367,11 +398,11 @@ const LrBilty = ({ navigation }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Actual (kg)</Text>
-                <TextInput style={sforminput} value={descriptionform?.industrialitemswtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, industrialitemswtactual: text })} />
+                <TextInput style={sforminput} value={descriptionform?.industrialitemswtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, industrialitemswtactual: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Charge (Rs)</Text>
-                <TextInput style={sforminput} value={descriptionform?.industrialitemswtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, industrialitemswtcharged: text })} />
+                <TextInput style={sforminput} value={descriptionform?.industrialitemswtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, industrialitemswtcharged: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformhr} />
@@ -382,11 +413,11 @@ const LrBilty = ({ navigation }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Actual (kg)</Text>
-                <TextInput style={sforminput} value={descriptionform?.cartransportationwtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, cartransportationwtactual: text })} />
+                <TextInput style={sforminput} value={descriptionform?.cartransportationwtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, cartransportationwtactual: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Charge (Rs)</Text>
-                <TextInput style={sforminput} value={descriptionform?.cartransportationwtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, cartransportationwtcharged: text })} />
+                <TextInput style={sforminput} value={descriptionform?.cartransportationwtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, cartransportationwtcharged: text })}  keyboardType={'number-pad'} />
               </View>
 
 
@@ -398,11 +429,11 @@ const LrBilty = ({ navigation }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Actual (kg)</Text>
-                <TextInput style={sforminput} value={descriptionform?.biketransportationwtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, biketransportationwtactual: text })} />
+                <TextInput style={sforminput} value={descriptionform?.biketransportationwtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, biketransportationwtactual: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Charge (Rs)</Text>
-                <TextInput style={sforminput} value={descriptionform?.biketransportationwtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, biketransportationwtcharged: text })} />
+                <TextInput style={sforminput} value={descriptionform?.biketransportationwtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, biketransportationwtcharged: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformhr} />
@@ -413,11 +444,11 @@ const LrBilty = ({ navigation }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Actual (kg)</Text>
-                <TextInput style={sforminput} value={descriptionform?.asperlistattachedwtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, asperlistattachedwtactual: text })} />
+                <TextInput style={sforminput} value={descriptionform?.asperlistattachedwtactual} onChangeText={(text) => setdescriptionform({ ...descriptionform, asperlistattachedwtactual: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Weight Charge (Rs)</Text>
-                <TextInput style={sforminput} value={descriptionform?.asperlistattachedwtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, asperlistattachedwtcharged: text })} />
+                <TextInput style={sforminput} value={descriptionform?.asperlistattachedwtcharged} onChangeText={(text) => setdescriptionform({ ...descriptionform, asperlistattachedwtcharged: text })}  keyboardType={'number-pad'}/>
               </View>
 
             </View>
@@ -433,11 +464,11 @@ const LrBilty = ({ navigation }) => {
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Freight Charges Rate (Rs.)</Text>
 
-                <TextInput style={sforminput} value={costform?.freightchargesrate} onChangeText={(text) => setcostform({ ...costform, freightchargesrate: text })} />
+                <TextInput style={sforminput} value={costform?.freightchargesrate} onChangeText={(text) => setcostform({ ...costform, freightchargesrate: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Freight Charges Paid (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.freightchargespaid} onChangeText={(text) => setcostform({ ...costform, freightchargespaid: text })} />
+                <TextInput style={sforminput} value={costform?.freightchargespaid} onChangeText={(text) => setcostform({ ...costform, freightchargespaid: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Freight Charges Due (Rs.)</Text>
@@ -451,11 +482,11 @@ const LrBilty = ({ navigation }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Loading Charges Rate (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.loadingchargerate} onChangeText={(text) => setcostform({ ...costform, loadingchargerate: text })} />
+                <TextInput style={sforminput} value={costform?.loadingchargerate} onChangeText={(text) => setcostform({ ...costform, loadingchargerate: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Loading Charges Paid (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.loadingchargepaid} onChangeText={(text) => setcostform({ ...costform, loadingchargepaid: text })} />
+                <TextInput style={sforminput} value={costform?.loadingchargepaid} onChangeText={(text) => setcostform({ ...costform, loadingchargepaid: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Loading Charges Due (Rs.)</Text>
@@ -469,11 +500,11 @@ const LrBilty = ({ navigation }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Unloading Charges Rate (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.unloadingchargerate} onChangeText={(text) => setcostform({ ...costform, unloadingchargerate: text })} />
+                <TextInput style={sforminput} value={costform?.unloadingchargerate} onChangeText={(text) => setcostform({ ...costform, unloadingchargerate: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Unloading Charges Paid (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.unloadingchargepaid} onChangeText={(text) => setcostform({ ...costform, unloadingchargepaid: text })} />
+                <TextInput style={sforminput} value={costform?.unloadingchargepaid} onChangeText={(text) => setcostform({ ...costform, unloadingchargepaid: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Unloading Charges Due (Rs.)</Text>
@@ -487,11 +518,11 @@ const LrBilty = ({ navigation }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>G.R. Charge Rate (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.grchargerate} onChangeText={(text) => setcostform({ ...costform, grchargerate: text })} />
+                <TextInput style={sforminput} value={costform?.grchargerate} onChangeText={(text) => setcostform({ ...costform, grchargerate: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>G.R. Charge Paid (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.grchargepaid} onChangeText={(text) => setcostform({ ...costform, grchargepaid: text })} />
+                <TextInput style={sforminput} value={costform?.grchargepaid} onChangeText={(text) => setcostform({ ...costform, grchargepaid: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformcontainerin2}>
@@ -507,12 +538,12 @@ const LrBilty = ({ navigation }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Insurance Charges Rate (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.insurancechargesrate} onChangeText={(text) => setcostform({ ...costform, insurancechargesrate: text })} />
+                <TextInput style={sforminput} value={costform?.insurancechargesrate} onChangeText={(text) => setcostform({ ...costform, insurancechargesrate: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Insurance Charges Paid (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.insurancechargespaid} onChangeText={(text) => setcostform({ ...costform, insurancechargespaid: text })} />
+                <TextInput style={sforminput} value={costform?.insurancechargespaid} onChangeText={(text) => setcostform({ ...costform, insurancechargespaid: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformcontainerin2}>
@@ -526,11 +557,11 @@ const LrBilty = ({ navigation }) => {
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>Discount (Rs.)</Text>
-                <TextInput style={sforminput} value={costform?.discount} onChangeText={(text) => setcostform({ ...costform, discount: text })} />
+                <TextInput style={sforminput} value={costform?.discount} onChangeText={(text) => setcostform({ ...costform, discount: text })}  keyboardType={'number-pad'}/>
               </View>
               <View style={sformcontainerin2}>
                 <Text style={sformlabel}>GST %</Text>
-                <TextInput style={sforminput} value={costform?.gst} onChangeText={(text) => setcostform({ ...costform, gst: text })} />
+                <TextInput style={sforminput} value={costform?.gst} onChangeText={(text) => setcostform({ ...costform, gst: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformcontainerin2}>
@@ -548,6 +579,7 @@ const LrBilty = ({ navigation }) => {
                 <Text style={sformlabel}>IGST %</Text>
                 <TextInput style={sforminput} value={costform?.igst}
                   onChangeText={(text) => setcostform({ ...costform, igst: text })}
+                  keyboardType={'number-pad'}
                 />
               </View>
 

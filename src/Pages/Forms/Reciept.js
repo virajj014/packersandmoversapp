@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Linking, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { colors } from '../../CommonStyles/Theme'
 import { formedit, sformcontainer, sformhead, sformhead2, sformcontainerin, sformcontainerin2, sformlabel, sformvalue, sformhr, formbtn, sforminput } from "../../CommonStyles/FormStyle"
@@ -128,6 +128,7 @@ const Reciept = ({ navigation }) => {
             if (data.message == "Reciept Saved Successfully") {
               alert("Reciept Saved Successfully")
               setediting(false)
+              showprintablerbill(basicform)
               resetvalues()
             }
             else {
@@ -161,6 +162,40 @@ const Reciept = ({ navigation }) => {
   useEffect(() => {
     basicform.amountrecievedinnumbers > 0 && convertamounttowords(basicform.amountrecievedinnumbers)
   }, [basicform])
+
+
+
+  const showprintablerbill = async (basicform) => {
+    let userid = 0;
+    let docid = basicform.recieptnumber;
+    let doctype = 'reciept'
+    AsyncStorage.getItem('token')
+      .then(token => {
+        fetch(`${envs.BACKEND_URL}/getuserdatafromtoken`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          }
+        })
+          .then(res => res.json())
+          .then(data => {
+            // console.log(data)
+            userid = data.userdata._id
+
+            // console.log(userid + '/' + doctype + '/' + docid)
+            Linking.openURL(`https://packersandmoversweb.vercel.app/bill/${userid}/${doctype}/${docid}`)
+            // navigation.navigate('PrintDoc', { userid: userid, doctype: doctype, docid: docid })
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      })
+      .catch(err => {
+        navigation.navigate('Login')
+      })
+
+  }
   return (
     <View>
       {
@@ -177,7 +212,7 @@ const Reciept = ({ navigation }) => {
               <Text style={sformhead}>Basic Details</Text>
               <View style={sformcontainerin}>
                 <Text style={sformlabel}>Reciept Number </Text>
-                <TextInput style={sforminput} value={basicform?.recieptnumber} onChangeText={(text) => setbasicform({ ...basicform, recieptnumber: text })} />
+                <TextInput style={sforminput} value={basicform?.recieptnumber} onChangeText={(text) => setbasicform({ ...basicform, recieptnumber: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformcontainerin}>
@@ -193,7 +228,7 @@ const Reciept = ({ navigation }) => {
               <View style={sformcontainerin}>
 
                 <Text style={sformlabel}>Amount Recieved in Numbers (Rs.)</Text>
-                <TextInput style={sforminput} value={basicform.amountrecievedinnumbers} onChangeText={(text) => setbasicform({ ...basicform, amountrecievedinnumbers: text })} />
+                <TextInput style={sforminput} value={basicform.amountrecievedinnumbers} onChangeText={(text) => setbasicform({ ...basicform, amountrecievedinnumbers: text })}  keyboardType={'number-pad'}/>
               </View>
 
               <View style={sformcontainerin}>

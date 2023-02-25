@@ -45,38 +45,61 @@ const EditProfile = ({ navigation }) => {
     };
     const uploadImageHandler = async (profileimage, type) => {
         setLoading(true);
-        const file = {
+        // const file = {
+        //     uri: profileimage.uri,
+        //     name: profileimage.uri.split('/').pop(),
+        //     type: 'image/jpg'
+        // }
+
+        // const options = {
+        //     bucket: 'packersandmovers',
+        //     accessKey: envs.AWS_ACCESS_KEY_ID,
+        //     secretKey: envs.AWS_SECRET_ACCESS_KEY,
+        //     region: 'ap-northeast-1',
+        //     successActionStatus: 201
+        // }
+
+        // // console.log(envs.AWS_ACCESS_KEY_ID)
+
+        // RNS3.put(file, options).then(response => {
+
+        //     if (response.status == 201) {
+        //         // alert('Image uploaded successfully');
+        //         console.log(response.body);
+        //         updateanyimage(response.body.postResponse.location, type);
+        //     }
+        //     else {
+        //         alert('Image upload failed');
+        //         console.log(response);
+        //     }
+        // })
+        //     .catch((err) => {
+        //         alert('Image upload failed ');
+        //         console.log(err);
+        //     })
+
+        let myfile = {
             uri: profileimage.uri,
-            name: profileimage.uri.split('/').pop(),
+            name: new Date().getTime() + '.jpg',
             type: 'image/jpg'
         }
 
-        const options = {
-            bucket: 'packersandmovers',
-            accessKey: envs.AWS_ACCESS_KEY_ID,
-            secretKey: envs.AWS_SECRET_ACCESS_KEY,
-            region: 'ap-northeast-1',
-            successActionStatus: 201
-        }
+        //upload to cloudinary
+        const data = new FormData();
+        data.append('file', myfile);
+        data.append('upload_preset', 'packersandmovers1');
+        data.append('cloud_name', 'dlekcxkkz');
 
-        // console.log(envs.AWS_ACCESS_KEY_ID)
-
-        RNS3.put(file, options).then(response => {
-
-            if (response.status == 201) {
-                // alert('Image uploaded successfully');
-                console.log(response.body);
-                updateanyimage(response.body.postResponse.location, type);
-            }
-            else {
-                alert('Image upload failed');
-                console.log(response);
-            }
+        fetch('https://api.cloudinary.com/v1_1/dlekcxkkz/image/upload', {
+            method: 'post',
+            body: data
         })
-            .catch((err) => {
-                alert('Image upload failed ');
-                console.log(err);
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                updateanyimage(data.url, type);
             })
+
     }
     const updateanyimage = (imgurl, type) => {
         // console.log(imgurl,type);

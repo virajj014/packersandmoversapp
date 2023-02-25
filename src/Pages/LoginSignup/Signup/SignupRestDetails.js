@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { fullbg1, head1, padding10, text1, formcont1, label, fontcont1in, input, colors, formcont2, link1, button, link21, link22 } from '../../../CommonStyles/Theme'
 import logo from '../../../Media/Images/whitelogofull.png'

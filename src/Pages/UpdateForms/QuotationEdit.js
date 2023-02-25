@@ -258,7 +258,7 @@ const QuotationEdit = ({ navigation, route }) => {
                             <View style={sformcontainerin}>
                                 <Text style={sformlabel}>Mobile Number</Text>
                                 <TextInput style={sforminput} value={basicform?.mobile} onChangeText={(text) => setbasicform({ ...basicform, mobile: text })}
-                                    maxLength={10}
+                                    maxLength={10} keyboardType='numeric'
                                 />
                             </View>
 
@@ -282,7 +282,7 @@ const QuotationEdit = ({ navigation, route }) => {
 
                             <View style={sformcontainerin}>
                                 <Text style={sformlabel}>From (Floor)</Text>
-                                <TextInput style={sforminput} value={basicform?.fromfloor} onChangeText={(text) => setbasicform({ ...basicform, fromfloor: text })} keyboardType={'number-pad'} />
+                                <TextInput   style={sforminput} value={basicform?.fromfloor} onChangeText={(text) => setbasicform({ ...basicform, fromfloor: text })} keyboardType={'number-pad'} />
                             </View>
 
                             <View style={sformcontainerin}>
@@ -323,12 +323,12 @@ const QuotationEdit = ({ navigation, route }) => {
                             </View>
                             <View style={sformcontainerin2}>
                                 <Text style={sformlabel}>Packing Charges (Rs.)</Text>
-                                <TextInput style={sforminput} value={costform?.packingcharge} onChangeText={(text) => setcostform({ ...costform, packingcharge: text })} />
+                                <TextInput style={sforminput} value={costform?.packingcharge} onChangeText={(text) => setcostform({ ...costform, packingcharge: text })} keyboardType='numeric'/>
                             </View>
 
                             <View style={sformcontainerin2}>
                                 <Text style={sformlabel}>Unpacking Charges (Rs.)</Text>
-                                <TextInput style={sforminput} value={costform?.unpackingcharge} onChangeText={(text) => setcostform({ ...costform, unpackingcharge: text })} />
+                                <TextInput style={sforminput} value={costform?.unpackingcharge} onChangeText={(text) => setcostform({ ...costform, unpackingcharge: text })} keyboardType='numeric'/>
                             </View>
                             <View style={sformhr}></View>
 
@@ -339,12 +339,12 @@ const QuotationEdit = ({ navigation, route }) => {
                             </View>
                             <View style={sformcontainerin2}>
                                 <Text style={sformlabel}>Loading Charges (Rs.)</Text>
-                                <TextInput style={sforminput} value={costform?.loadingcharge} onChangeText={(text) => setcostform({ ...costform, loadingcharge: text })} />
+                                <TextInput style={sforminput} value={costform?.loadingcharge} onChangeText={(text) => setcostform({ ...costform, loadingcharge: text })} keyboardType='numeric'/>
                             </View>
 
                             <View style={sformcontainerin2}>
                                 <Text style={sformlabel}>Unloading Charges (Rs.)</Text>
-                                <TextInput style={sforminput} value={costform?.unloadingcharge} onChangeText={(text) => setcostform({ ...costform, unloadingcharge: text })} />
+                                <TextInput style={sforminput} value={costform?.unloadingcharge} onChangeText={(text) => setcostform({ ...costform, unloadingcharge: text })} keyboardType='numeric'/>
                             </View>
 
                             <View style={sformcontainerin2}>
@@ -352,12 +352,12 @@ const QuotationEdit = ({ navigation, route }) => {
                             </View>
                             <View style={sformcontainerin2}>
                                 <Text style={sformlabel}>Truck Size</Text>
-                                <TextInput style={sforminput} value={costform?.trucksize} onChangeText={(text) => setcostform({ ...costform, trucksize: text })} />
+                                <TextInput style={sforminput} value={costform?.trucksize} onChangeText={(text) => setcostform({ ...costform, trucksize: text })} keyboardType='numeric'/>
                             </View>
 
                             <View style={sformcontainerin2}>
                                 <Text style={sformlabel}>Pro Fright Charges (Rs.)</Text>
-                                <TextInput style={sforminput} value={costform?.profright} onChangeText={(text) => setcostform({ ...costform, profright: text })} />
+                                <TextInput style={sforminput} value={costform?.profright} onChangeText={(text) => setcostform({ ...costform, profright: text })} keyboardType='numeric'/>
                             </View>
 
                             <View style={sformcontainerin2}>
@@ -366,11 +366,11 @@ const QuotationEdit = ({ navigation, route }) => {
                             </View>
                             <View style={sformcontainerin2}>
                                 <Text style={sformlabel}>Handyman Charges (Rs.)</Text>
-                                <TextInput style={sforminput} value={costform?.handymancharges} onChangeText={(text) => setcostform({ ...costform, handymancharges: text })} />
+                                <TextInput style={sforminput} value={costform?.handymancharges} onChangeText={(text) => setcostform({ ...costform, handymancharges: text })} keyboardType='numeric'/>
                             </View>
                             <View style={sformcontainerin2}>
                                 <Text style={sformlabel}>Escort Charges (Rs.)</Text>
-                                <TextInput style={sforminput} value={costform?.escortcharges} onChangeText={(text) => setcostform({ ...costform, escortcharges: text })} />
+                                <TextInput style={sforminput} value={costform?.escortcharges} onChangeText={(text) => setcostform({ ...costform, escortcharges: text })} keyboardType='numeric'/>
                             </View>
                             <View style={sformhr}></View>
 
@@ -380,7 +380,7 @@ const QuotationEdit = ({ navigation, route }) => {
                             </View>
                             <View style={sformcontainerin2}>
                                 <Text style={sformlabel}>Insurance Charges (Rs.)</Text>
-                                <TextInput style={sforminput} value={costform?.insurancecharges} onChangeText={(text) => setcostform({ ...costform, insurancecharges: text })} />
+                                <TextInput style={sforminput} value={costform?.insurancecharges} onChangeText={(text) => setcostform({ ...costform, insurancecharges: text })} keyboardType='numeric'/>
                             </View>
 
                             <View style={sformcontainerin2}>
@@ -400,7 +400,7 @@ const QuotationEdit = ({ navigation, route }) => {
 
                             <View style={sformcontainerin2}>
                                 <Text style={sformlabel}>Any Other Charges (Rs.)</Text>
-                                <TextInput style={sforminput} value={costform?.anyothercharges} onChangeText={(text) => setcostform({ ...costform, anyothercharges: text })} />
+                                <TextInput style={sforminput} value={costform?.anyothercharges} onChangeText={(text) => setcostform({ ...costform, anyothercharges: text })} keyboardType='numeric'/>
                             </View>
 
 
@@ -460,7 +460,7 @@ const QuotationEdit = ({ navigation, route }) => {
                             <View style={sformcontainerin2}>
                                 <Text style={sformlabel}>IGST %</Text>
                                 <TextInput style={sforminput} value={costform?.igst}
-                                    onChangeText={(text) => setcostform({ ...costform, igst: text })}
+                                    onChangeText={(text) => setcostform({ ...costform, igst: text })} keyboardType='numeric'
                                 />
                             </View>
 
@@ -495,7 +495,7 @@ const QuotationEdit = ({ navigation, route }) => {
                             {/*  */}
                             <View style={sformcontainerin2}>
                                 <Text style={sformhead2}>REMARKS</Text>
-                                <TextInput style={sforminput} value={costform?.remarks2} onChangeText={(text) => setcostform({ ...costform, remarks2: text })} />
+                                <TextInput style={sforminput} value={costform?.remarks2} onChangeText={(text) => setcostform({ ...costform, remarks2: text })} keyboardType='numeric'/>
                             </View>
                         </View>
 
